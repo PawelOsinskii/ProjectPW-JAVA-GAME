@@ -1,9 +1,0 @@
-# Pawel 1. Klasa Postac wyswietlanie i poruszanie sie,mag,rycerz,boty
-# Robert 2. Mapa dwie warstwy 
-	a) na pierwszej mozna chodzic 
-	b) druga kolizja 
-# Robert 3. Podzial na ekrany 
-# Robert 4. Glowna klasa extends Game 
-# Robert 5. Jeden screen na grę, drugi na sklep + statystyki 
-
-
