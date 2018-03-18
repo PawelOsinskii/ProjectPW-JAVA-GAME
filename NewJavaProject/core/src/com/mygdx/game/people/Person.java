@@ -4,11 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.mygdx.game.map.MapScreen;
 
 public abstract class Person implements Stats {
 
@@ -18,71 +19,42 @@ public abstract class Person implements Stats {
 	private int shielding; // Defense skill
 	private int magicLevel; // Magic skill
 	private int attackLevel; // Attack skill
+	private int gold; // Amount of money
 
 	// To generate image of person
-	private SpriteBatch spriteBatch;
-	private Texture texture;
-	private OrthographicCamera camera;
-	private Sprite sprite;
+	protected SpriteBatch spriteBatch;
+	protected Texture texture;
+	protected Sprite sprite;
 	// Coordinates of Person
-	private Vector2 position;
-	
-	// To animate person
-	Texture walkSheet;
-	float stateTime;
-	
-	// dokoncz animacje z goblina 
-	
+	protected Vector2 position;
 
-	public Person(String pathToFile, OrthographicCamera camera) {
+	public Person(String pathToFile,Vector2 position) {
 		this.hp = Stats.HP_START;
 		this.mana = Stats.MANA_START;
 		this.speed = Stats.SPEED_START;
 		this.shielding = Stats.SHIELDING_START; // Starting defense level
 		this.magicLevel = Stats.MAGIC_LEVEL_START; // Minimum magic level
 		this.attackLevel = Stats.ATTACK_LEVEL_START; // Minimum attack level
-		this.camera = camera;
-		position = new Vector2(camera.position.x, camera.position.y);
+		this.setGold(Stats.GOLD_START);
+		//position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
+		this.position = position;
 		spriteBatch = new SpriteBatch();
 		texture = new Texture(pathToFile);
 		sprite = new Sprite(texture);
-		sprite.setCenter(camera.viewportWidth / 2, camera.viewportHeight / 2);
 	}
 
 	public void update(float delta) {
 		spriteBatch.begin();
 		sprite.draw(spriteBatch);
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (!(camera.position.x < 271)) {
-				camera.translate(-3, 0);
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-			if (!(camera.position.x > 1771)) {
-				camera.translate(3, 0);
-			}
-		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
-			if (!(camera.position.y < 220)) {
-				camera.translate(0, -3);
-			}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP))
-			if (!(camera.position.y > 1810)) {
-				camera.translate(0, 3);
-			}
 		spriteBatch.end();
 	}
 
 	public void dispose() {
 		spriteBatch.dispose();
-		texture.dispose();
 	}
 
-	public boolean isCollideWithSecondLayer(OrthogonalTiledMapRenderer tiledMapRenderer) {
-		// if (tiledMapRenderer.getMap().getLayers().get(1).getOffsetY()) {
-		// return true;
+	public void isCollideWithSecondLayer(MapScreen mapScreen) {
 
-		return false;
 	}
 
 	public int getHp() {
@@ -139,6 +111,14 @@ public abstract class Person implements Stats {
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
 	}
 
 }

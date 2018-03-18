@@ -8,5 +8,6 @@ public interface Stats {
 	int SHIELDING_START = 10;
 	int MAGIC_LEVEL_START = 1;
 	int ATTACK_LEVEL_START = 1;
+	int GOLD_START = 50;
 	
 }

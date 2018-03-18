@@ -1,5 +1,11 @@
 package com.mygdx.game.map;
 
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import javax.swing.text.Position;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -13,63 +19,64 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
+import com.mygdx.game.people.Bot;
 import com.mygdx.game.people.Knight;
+import com.mygdx.game.people.Person;
 
-public class MapScreen implements Screen, InputProcessor {
+public class MapScreen implements Screen {
 
 	public static final String TAG = MapScreen.class.getName();
 	private static final String mapName = "eclipse-workspace/NewJavaProject/core/assets/map.tmx";
 	private static final float ZOOM = 0.45f;
-	private final float startPositionX = 430;
-	private final float startPositionY = 1684;
+	public static final int startPositionX = 400;
+	public static final int startPositionY = 1640;
+	public static final float ZOOM_RATE = 0.8f;
 	TiledMap tiledMap;
 	OrthographicCamera camera;
-	OrthogonalTiledMapRenderer tiledMapRenderer;
+	private OrthogonalTiledMapRenderer tiledMapRenderer;
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 2 };
 
-	Knight knight;
+	private Knight knight;
 
-	Animation<TextureRegion> goblinAnimation;
-	Texture walkSheet;
-	SpriteBatch spriteBatch;
-	float stateTime;
+	//Bot bot;
+	boolean isZooming = false;
+
+	// to change map
+	HashMap<String, Vector2> mapsNameAndCoords;
 
 	@Override
 	public void show() {
+		init(startPositionX, startPositionY);
+		// knight.isCollideWithSecondLayer(tiledMapRenderer);
+		mapsNameAndCoords = new HashMap<>();
+		mapsNameAndCoords.put(mapName, new Vector2(startPositionX, startPositionY));
+		mapsNameAndCoords.put(mapName, new Vector2(690, 1100));
+	}
 
-		walkSheet = new Texture("/home/robjan/eclipse-workspace/NewJavaProject/core/assets/goblin.png");
-		TextureRegion[][] tmp = TextureRegion.split(walkSheet, walkSheet.getWidth() / 11, walkSheet.getHeight() / 5);
-		TextureRegion[] walkFrames = new TextureRegion[11 * 5];
-		int index = 0;
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 11; j++) {
-				walkFrames[index++] = tmp[i][j];
-			}
-		}
-		goblinAnimation = new Animation<TextureRegion>(0.025f, walkFrames);
-		spriteBatch = new SpriteBatch();
-		stateTime = 0f;
-
+	// initialize variable
+	private void init(float posX, float posY) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
 		tiledMap = new TmxMapLoader(new ExternalFileHandleResolver()).load(mapName);
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-		Gdx.input.setInputProcessor(this);
+		setTiledMapRenderer(new OrthogonalTiledMapRenderer(tiledMap));
 		knight = new Knight(camera);
-		tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+		// bot = new Bot();
 		camera.zoom = ZOOM;
-		camera.position.set(startPositionX, startPositionY, 0);
+		camera.position.set(posX, posY, 0);
 		camera.update();
-
-		// knight.isCollideWithSecondLayer(tiledMapRenderer);
 	}
 
 	@Override
@@ -78,21 +85,34 @@ public class MapScreen implements Screen, InputProcessor {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-		// Ciekawa opcja na zakonczenie gry
-		// camera.zoom += 0.1;
-		tiledMapRenderer.setView(camera);
-		tiledMapRenderer.render(layerBottom);
-		knight.update(delta);
-		
-		stateTime += Gdx.graphics.getDeltaTime();
-		TextureRegion currentFrame = goblinAnimation.getKeyFrame(stateTime, true);
-		spriteBatch.begin();
-		spriteBatch.draw(currentFrame, 50, 50);
-		spriteBatch.end();
 
-		knight.isCollideWithSecondLayer(tiledMapRenderer);
-		tiledMapRenderer.render(layerTop);
-		// System.out.println(knight.isCollideWithSecondLayer(tiledMapRenderer));
+		getTiledMapRenderer().setView(camera);
+		getTiledMapRenderer().render(layerBottom);
+		knight.update(delta, this);
+		// bot.update(delta);
+
+		// knight.isCollideWithSecondLayer(this);
+
+		getTiledMapRenderer().render(layerTop);
+
+		// Zoom out effect and reseting map
+		if (isEndOfGame(knight, getTiledMapRenderer())) {
+			long endTime = TimeUtils.nanoTime();
+			isZooming = false;
+			// Do poprawy kamera
+			// camera.zoom += ZOOM_RATE;
+			while (!isZooming) {
+				if (TimeUtils.timeSinceNanos(endTime) > 1000000000) {
+					init(startPositionX, startPositionY);
+					isZooming = true;
+					endTime = TimeUtils.nanoTime();
+				}
+			}
+		}
+	}
+
+	// function to save map !!
+	public void saveMap() {
 	}
 
 	@Override
@@ -112,59 +132,45 @@ public class MapScreen implements Screen, InputProcessor {
 	public void hide() {
 	}
 
+	public boolean isEndOfGame(Person person, OrthogonalTiledMapRenderer mapRenderer) {
+		// get first layer and calculate center of the map
+		TiledMapTileLayer layer = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(0);
+		float width = layer.getTileWidth() * layer.getWidth();
+		float height = layer.getTileHeight() * layer.getHeight();
+		// is in "circle"
+		if (person.getPosition().dst(width / 2, height / 2) < 10) {
+			return true;
+		}
+
+		// pozycja posągu (690,1100)
+		// cos nie dziala, ma byc w okregu o promieniu R = 20
+		if (((Math.pow(person.getPosition().x - 690, 2)) + (Math.pow(person.getPosition().y - 1100, 2))) < 50) {
+			camera.zoom += 0.3;
+			return true;
+		}
+		return false;
+	}
+
 	@Override
 	public void dispose() {
 		tiledMap.dispose();
 		tiledMapRenderer.dispose();
 		knight.dispose();
-
-		spriteBatch.dispose();
-		walkSheet.dispose();
+		//bot.dispose();
 	}
 
-	@Override
-	public boolean keyDown(int keycode) {
-		return false;
+	public OrthogonalTiledMapRenderer getTiledMapRenderer() {
+		return tiledMapRenderer;
 	}
 
-	@Override
-	public boolean keyUp(int keycode) {
-		if (keycode == Input.Keys.NUM_1)
-			tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
-		if (keycode == Input.Keys.NUM_2)
-			tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
-		Gdx.app.log(TAG, camera.position.toString());
-		return false;
+	public void setTiledMapRenderer(OrthogonalTiledMapRenderer tiledMapRenderer) {
+		this.tiledMapRenderer = tiledMapRenderer;
+	}
+	public Knight getKnight() {
+		return knight;
 	}
 
-	@Override
-	public boolean keyTyped(char character) {
-		return false;
+	public void setKnight(Knight knight) {
+		this.knight = knight;
 	}
-
-	@Override
-	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		return false;
-	}
-
-	@Override
-	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
-	}
-
-	@Override
-	public boolean mouseMoved(int screenX, int screenY) {
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		return false;
-	}
-
 }
