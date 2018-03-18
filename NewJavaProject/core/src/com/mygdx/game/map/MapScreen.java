@@ -28,6 +28,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.people.Bot;
 import com.mygdx.game.people.Knight;
 import com.mygdx.game.people.Person;
@@ -48,8 +50,8 @@ public class MapScreen implements Screen {
 	private int[] layerTop = { 2 };
 
 	private Knight knight;
+	private Bot bot;
 
-	//Bot bot;
 	boolean isZooming = false;
 
 	// to change map
@@ -73,7 +75,7 @@ public class MapScreen implements Screen {
 		tiledMap = new TmxMapLoader(new ExternalFileHandleResolver()).load(mapName);
 		setTiledMapRenderer(new OrthogonalTiledMapRenderer(tiledMap));
 		knight = new Knight(camera);
-		// bot = new Bot();
+		bot = new Bot();
 		camera.zoom = ZOOM;
 		camera.position.set(posX, posY, 0);
 		camera.update();
@@ -89,7 +91,8 @@ public class MapScreen implements Screen {
 		getTiledMapRenderer().setView(camera);
 		getTiledMapRenderer().render(layerBottom);
 		knight.update(delta, this);
-		// bot.update(delta);
+		bot.update(delta);
+		
 
 		// knight.isCollideWithSecondLayer(this);
 
@@ -100,7 +103,7 @@ public class MapScreen implements Screen {
 			long endTime = TimeUtils.nanoTime();
 			isZooming = false;
 			// Do poprawy kamera
-			// camera.zoom += ZOOM_RATE;
+			//camera.zoom += ZOOM_RATE;
 			while (!isZooming) {
 				if (TimeUtils.timeSinceNanos(endTime) > 1000000000) {
 					init(startPositionX, startPositionY);
@@ -142,9 +145,12 @@ public class MapScreen implements Screen {
 			return true;
 		}
 
-		// pozycja posągu (690,1100)
-		// cos nie dziala, ma byc w okregu o promieniu R = 20
-		if (((Math.pow(person.getPosition().x - 690, 2)) + (Math.pow(person.getPosition().y - 1100, 2))) < 50) {
+		// pozycja posągu (650,1140) + 32
+		// cos nie dziala, ma byc w okregu o promieniu R = 50
+		if (((Math.pow(person.getPosition().x - 650, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60
+				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1172, 2))) < 60
+				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60
+				|| ((Math.pow(person.getPosition().x - 650, 2)) + (Math.pow(person.getPosition().y - 1172, 2))) < 60) {
 			camera.zoom += 0.3;
 			return true;
 		}
@@ -156,7 +162,7 @@ public class MapScreen implements Screen {
 		tiledMap.dispose();
 		tiledMapRenderer.dispose();
 		knight.dispose();
-		//bot.dispose();
+		bot.dispose();
 	}
 
 	public OrthogonalTiledMapRenderer getTiledMapRenderer() {
@@ -166,6 +172,7 @@ public class MapScreen implements Screen {
 	public void setTiledMapRenderer(OrthogonalTiledMapRenderer tiledMapRenderer) {
 		this.tiledMapRenderer = tiledMapRenderer;
 	}
+
 	public Knight getKnight() {
 		return knight;
 	}

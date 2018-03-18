@@ -24,7 +24,6 @@ public abstract class Person implements Stats {
 	// To generate image of person
 	protected SpriteBatch spriteBatch;
 	protected Texture texture;
-	protected Sprite sprite;
 	// Coordinates of Person
 	protected Vector2 position;
 
@@ -39,13 +38,12 @@ public abstract class Person implements Stats {
 		//position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
 		this.position = position;
 		spriteBatch = new SpriteBatch();
-		texture = new Texture(pathToFile);
-		sprite = new Sprite(texture);
+		texture = new Texture(Gdx.files.internal(pathToFile));
 	}
 
 	public void update(float delta) {
 		spriteBatch.begin();
-		sprite.draw(spriteBatch);
+		spriteBatch.draw(texture, position.x, position.y);
 		spriteBatch.end();
 	}
 

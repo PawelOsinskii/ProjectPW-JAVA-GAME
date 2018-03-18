@@ -6,6 +6,7 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -14,7 +15,7 @@ import com.mygdx.game.map.MapScreen;
 
 public class Knight extends Person {
 	// nazwa pliku z rycerzem
-	public static final String toFilePath = "/home/robjan/eclipse-workspace/NewJavaProject/core/assets/person1.png";
+	public static final String toFilePath = "person1.png";
 
 	// To animate person in different position
 	Animation<TextureRegion> walkAnimation;
@@ -38,10 +39,10 @@ public class Knight extends Person {
 	public Knight(OrthographicCamera camera) {
 
 		super(toFilePath, new Vector2(MapScreen.startPositionX, MapScreen.startPositionY));
-		super.sprite.setCenter(camera.viewportWidth / 2, camera.viewportHeight / 2);
 		this.camera = camera;
 		// animation
-		walkSheet = new Texture(toFilePath);
+		walkSheet = new Texture(Gdx.files.internal(toFilePath));
+		walkSheet.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 		textureRegion = TextureRegion.split(walkSheet, walkSheet.getWidth() / 4, walkSheet.getHeight() / 4);
 
 		upWalk = new TextureRegion[4];
@@ -62,23 +63,25 @@ public class Knight extends Person {
 		walkAnimationRight = new Animation<TextureRegion>(0.1f, rightWalk);
 
 		walkBatch = new SpriteBatch();
+		
 	}
 
 	public void update(float delta, MapScreen mapScreen) {
+		walkBatch.setProjectionMatrix(camera.combined);
 		camera.update();
 		walkBatch.begin();
 		stateTime += delta;
 
 		if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)
 				&& !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
-			walkBatch.draw(downWalk[0], 500, 500);
+			walkBatch.draw(downWalk[0], position.x, position.y);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
 			if (!(camera.position.x < 271)) {
 				camera.translate(-3, 0);
 				position.x -= 3;
 				currentFrame = walkAnimationLeft.getKeyFrame(stateTime, true);
-				walkBatch.draw(currentFrame, 500, 500);
+				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
@@ -86,7 +89,7 @@ public class Knight extends Person {
 				camera.translate(3, 0);
 				position.x += 3;
 				currentFrame = walkAnimationRight.getKeyFrame(stateTime, true);
-				walkBatch.draw(currentFrame, 500, 500);
+				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
@@ -94,14 +97,14 @@ public class Knight extends Person {
 				camera.translate(0, -3);
 				position.y -= 3;
 				currentFrame = walkAnimationDown.getKeyFrame(stateTime, true);
-				walkBatch.draw(currentFrame, 500, 500);
+				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP))
 			if (!(camera.position.y > 1810)) {
 				camera.translate(0, 3);
 				position.y += 3;
 				currentFrame = walkAnimationUp.getKeyFrame(stateTime, true);
-				walkBatch.draw(currentFrame, 500, 500);
+				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		walkBatch.end();
 	}
@@ -112,7 +115,5 @@ public class Knight extends Person {
 		walkSheet.dispose();
 		super.dispose();
 	}
-
-
 
 }
