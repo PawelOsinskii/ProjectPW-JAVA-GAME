@@ -40,7 +40,6 @@ public class ScreenSwitcher extends InputAdapter {
 
 			}
 		}
-		System.out.println(screenMap.getKnight().getPosition().x + " " + screenMap.getKnight().getPosition().y);
 		return true;
 	}
 
