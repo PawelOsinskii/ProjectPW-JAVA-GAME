@@ -1,11 +1,12 @@
-package com.mygdx.game.people;
+package pl.edu.pw.fizyka.pojava.JankowskiOsinski.people;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
-import com.mygdx.game.map.MapScreen;
+
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Wizard extends Person {
 

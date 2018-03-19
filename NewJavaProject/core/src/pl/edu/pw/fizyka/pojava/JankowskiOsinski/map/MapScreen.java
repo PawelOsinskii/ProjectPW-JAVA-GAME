@@ -1,4 +1,4 @@
-package com.mygdx.game.map;
+package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
 import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
@@ -14,9 +14,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.mygdx.game.people.Bot;
-import com.mygdx.game.people.Knight;
-import com.mygdx.game.people.Person;
+
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 
 public class MapScreen implements Screen {
 

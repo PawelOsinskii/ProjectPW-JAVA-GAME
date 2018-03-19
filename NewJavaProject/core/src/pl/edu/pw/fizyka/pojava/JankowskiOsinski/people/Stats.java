@@ -1,4 +1,4 @@
-package com.mygdx.game.people;
+package pl.edu.pw.fizyka.pojava.JankowskiOsinski.people;
 
 public interface Stats {
 

@@ -1,10 +1,11 @@
-package com.mygdx.game;
+package pl.edu.pw.fizyka.pojava.JankowskiOsinski;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.mygdx.game.map.MapScreen;
-import com.mygdx.game.map.ScreenSwitcher;
-import com.mygdx.game.map.StatsScreen;
+
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.ScreenSwitcher;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.StatsScreen;
 
 public class MyGdxGame extends Game {
 

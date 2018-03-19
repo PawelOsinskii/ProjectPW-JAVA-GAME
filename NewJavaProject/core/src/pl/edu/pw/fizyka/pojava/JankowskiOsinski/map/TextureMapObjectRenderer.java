@@ -1,4 +1,4 @@
-package com.mygdx.game.map;
+package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObject;
