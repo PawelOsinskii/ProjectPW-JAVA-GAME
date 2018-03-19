@@ -15,7 +15,7 @@ import com.mygdx.game.map.MapScreen;
 
 public class Knight extends Person {
 	// nazwa pliku z rycerzem
-	public static final String toFilePath = "person1.png";
+	public static final String toFilePath = "person2.png";
 
 	// To animate person in different position
 	Animation<TextureRegion> walkAnimation;
@@ -63,7 +63,7 @@ public class Knight extends Person {
 		walkAnimationRight = new Animation<TextureRegion>(0.1f, rightWalk);
 
 		walkBatch = new SpriteBatch();
-		
+
 	}
 
 	public void update(float delta, MapScreen mapScreen) {
@@ -77,7 +77,7 @@ public class Knight extends Person {
 			walkBatch.draw(downWalk[0], position.x, position.y);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-			if (!(camera.position.x < 271)) {
+			if (!(camera.position.x < 270)) {
 				camera.translate(-3, 0);
 				position.x -= 3;
 				currentFrame = walkAnimationLeft.getKeyFrame(stateTime, true);
@@ -100,13 +100,14 @@ public class Knight extends Person {
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP))
-			if (!(camera.position.y > 1810)) {
+			if (!(camera.position.y > 1799)) {
 				camera.translate(0, 3);
 				position.y += 3;
 				currentFrame = walkAnimationUp.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		walkBatch.end();
+
 	}
 
 	@Override

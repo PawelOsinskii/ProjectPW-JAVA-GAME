@@ -1,35 +1,19 @@
 package com.mygdx.game.map;
 
-import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.concurrent.TimeUnit;
-
-import javax.swing.text.Position;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.utils.Timer;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mygdx.game.people.Bot;
 import com.mygdx.game.people.Knight;
 import com.mygdx.game.people.Person;
@@ -39,12 +23,17 @@ public class MapScreen implements Screen {
 	public static final String TAG = MapScreen.class.getName();
 	private static final String mapName = "eclipse-workspace/NewJavaProject/core/assets/map.tmx";
 	private static final float ZOOM = 0.45f;
-	public static final int startPositionX = 400;
-	public static final int startPositionY = 1640;
+	public static final int startPositionX = 352;
+	public static final int startPositionY = 1679;
 	public static final float ZOOM_RATE = 0.8f;
 	TiledMap tiledMap;
 	OrthographicCamera camera;
-	private OrthogonalTiledMapRenderer tiledMapRenderer;
+	TextureMapObjectRenderer tiledMapRenderer;
+	
+	
+	// for monster
+	MapLayer monsterLayer;
+	MapObjects monsterObjects;
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 2 };
@@ -73,9 +62,11 @@ public class MapScreen implements Screen {
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
 		tiledMap = new TmxMapLoader(new ExternalFileHandleResolver()).load(mapName);
-		setTiledMapRenderer(new OrthogonalTiledMapRenderer(tiledMap));
+		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 		knight = new Knight(camera);
 		bot = new Bot();
+		monsterLayer = tiledMap.getLayers().get("monster");
+		monsterObjects = monsterLayer.getObjects();
 		camera.zoom = ZOOM;
 		camera.position.set(posX, posY, 0);
 		camera.update();
@@ -85,25 +76,29 @@ public class MapScreen implements Screen {
 	public void render(float delta) {
 		camera.update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
-		Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		getTiledMapRenderer().setView(camera);
-		getTiledMapRenderer().render(layerBottom);
+	
+		tiledMapRenderer.setView(camera);
+		tiledMapRenderer.render(layerBottom);
+	
 		knight.update(delta, this);
-		bot.update(delta);
+		tiledMapRenderer.renderObject(monsterObjects.get("dragon"));
+		tiledMapRenderer.renderObject(monsterObjects.get("goblin"));
+		tiledMapRenderer.renderObject(monsterObjects.get("demon"));
 		
-
+		// bot.update(delta);
 		// knight.isCollideWithSecondLayer(this);
 
-		getTiledMapRenderer().render(layerTop);
-
+		tiledMapRenderer.render(layerTop);
+		
+		
 		// Zoom out effect and reseting map
 		if (isEndOfGame(knight, getTiledMapRenderer())) {
 			long endTime = TimeUtils.nanoTime();
 			isZooming = false;
 			// Do poprawy kamera
-			//camera.zoom += ZOOM_RATE;
+			// camera.zoom += ZOOM_RATE;
 			while (!isZooming) {
 				if (TimeUtils.timeSinceNanos(endTime) > 1000000000) {
 					init(startPositionX, startPositionY);
@@ -112,9 +107,10 @@ public class MapScreen implements Screen {
 				}
 			}
 		}
+		
 	}
 
-	// function to save map !!
+	// function to save map,not finished yet
 	public void saveMap() {
 	}
 
@@ -169,7 +165,7 @@ public class MapScreen implements Screen {
 		return tiledMapRenderer;
 	}
 
-	public void setTiledMapRenderer(OrthogonalTiledMapRenderer tiledMapRenderer) {
+	public void setTiledMapRenderer(TextureMapObjectRenderer tiledMapRenderer) {
 		this.tiledMapRenderer = tiledMapRenderer;
 	}
 
