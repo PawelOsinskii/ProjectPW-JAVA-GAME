@@ -1,3 +1,3 @@
 # ProjectPW
-Project for Java classes, Physics Faculty, Warsaw Univeristy of Technology 
+Project for Java classes, Physics Faculty, Warsaw University of Technology 
 
