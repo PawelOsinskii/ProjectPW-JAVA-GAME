@@ -27,12 +27,12 @@ public class MapScreen implements Screen {
 	public static final int startPositionX = 352;
 	public static final int startPositionY = 1679;
 	public static final float ZOOM_RATE = 0.8f;
+	
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
 	
-	
-	// for monster
+	// for monsters
 	MapLayer monsterLayer;
 	MapObjects monsterObjects;
 
@@ -84,6 +84,7 @@ public class MapScreen implements Screen {
 		tiledMapRenderer.render(layerBottom);
 	
 		knight.update(delta, this);
+		
 		tiledMapRenderer.renderObject(monsterObjects.get("dragon"));
 		tiledMapRenderer.renderObject(monsterObjects.get("goblin"));
 		tiledMapRenderer.renderObject(monsterObjects.get("demon"));
@@ -93,7 +94,6 @@ public class MapScreen implements Screen {
 
 		tiledMapRenderer.render(layerTop);
 		
-		
 		// Zoom out effect and reseting map
 		if (isEndOfGame(knight, getTiledMapRenderer())) {
 			long endTime = TimeUtils.nanoTime();
@@ -101,7 +101,7 @@ public class MapScreen implements Screen {
 			// Do poprawy kamera
 			// camera.zoom += ZOOM_RATE;
 			while (!isZooming) {
-				if (TimeUtils.timeSinceNanos(endTime) > 1000000000) {
+				if (TimeUtils.timeSinceNanos(endTime) > 10000000) {
 					init(startPositionX, startPositionY);
 					isZooming = true;
 					endTime = TimeUtils.nanoTime();
@@ -131,7 +131,7 @@ public class MapScreen implements Screen {
 	@Override
 	public void hide() {
 	}
-
+	// check player position on the map 
 	public boolean isEndOfGame(Person person, OrthogonalTiledMapRenderer mapRenderer) {
 		// get first layer and calculate center of the map
 		TiledMapTileLayer layer = (TiledMapTileLayer) mapRenderer.getMap().getLayers().get(0);

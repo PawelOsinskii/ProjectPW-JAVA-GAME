@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Knight extends Person {
+	
 	// nazwa pliku z rycerzem
 	public static final String toFilePath = "person2.png";
 
