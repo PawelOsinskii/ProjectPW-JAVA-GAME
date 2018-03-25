@@ -15,6 +15,8 @@ public class ScreenSwitcher extends InputAdapter {
 	int currentScreen;
 	Vector2 posCamera;
 	Vector2 posPlayer;
+	
+	
 
 	public ScreenSwitcher(Game game, MapScreen screenMap, Screen statsScreen) {
 		this.game = game;
@@ -45,6 +47,11 @@ public class ScreenSwitcher extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		// tu sprawdzam czy nacisnalem dragon, ale wymaga poprawy,bo sa inne wspolrzedne !!
+		if(screenX == screenMap.bots.position("dragon").x) {
+			System.out.println("yeah");
+		}
+		System.out.println(screenMap.bots.position("d"));
 		return false;
 	}
 }

@@ -6,8 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.maps.MapLayer;
-import com.badlogic.gdx.maps.MapObjects;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -22,6 +20,7 @@ import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 public class MapScreen implements Screen {
 
 	public static final String TAG = MapScreen.class.getName();
+	// do poprawy,zeby byla sciezka inna
 	private static final String mapName = "eclipse-workspace/NewJavaProject/core/assets/map.tmx";
 	private static final float ZOOM = 0.45f;
 	public static final int startPositionX = 352;
@@ -32,15 +31,11 @@ public class MapScreen implements Screen {
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
 	
-	// for monsters
-	MapLayer monsterLayer;
-	MapObjects monsterObjects;
-
 	private int[] layerBottom = { 0 };
-	private int[] layerTop = { 2 };
+	private int[] layerTop = { 3 };
 
 	private Knight knight;
-	private Bot bot;
+	public Bot bots;
 
 	boolean isZooming = false;
 
@@ -65,9 +60,8 @@ public class MapScreen implements Screen {
 		tiledMap = new TmxMapLoader(new ExternalFileHandleResolver()).load(mapName);
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 		knight = new Knight(camera);
-		bot = new Bot();
-		monsterLayer = tiledMap.getLayers().get("monster");
-		monsterObjects = monsterLayer.getObjects();
+		bots = new Bot(tiledMapRenderer);
+	
 		camera.zoom = ZOOM;
 		camera.position.set(posX, posY, 0);
 		camera.update();
@@ -78,18 +72,13 @@ public class MapScreen implements Screen {
 		camera.update();
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
 	
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render(layerBottom);
 	
 		knight.update(delta, this);
-		
-		tiledMapRenderer.renderObject(monsterObjects.get("dragon"));
-		tiledMapRenderer.renderObject(monsterObjects.get("goblin"));
-		tiledMapRenderer.renderObject(monsterObjects.get("demon"));
-		
-		// bot.update(delta);
+	
+		bots.update(delta);
 		// knight.isCollideWithSecondLayer(this);
 
 		tiledMapRenderer.render(layerTop);
@@ -98,8 +87,6 @@ public class MapScreen implements Screen {
 		if (isEndOfGame(knight, getTiledMapRenderer())) {
 			long endTime = TimeUtils.nanoTime();
 			isZooming = false;
-			// Do poprawy kamera
-			// camera.zoom += ZOOM_RATE;
 			while (!isZooming) {
 				if (TimeUtils.timeSinceNanos(endTime) > 10000000) {
 					init(startPositionX, startPositionY);
@@ -159,7 +146,6 @@ public class MapScreen implements Screen {
 		tiledMap.dispose();
 		tiledMapRenderer.dispose();
 		knight.dispose();
-		bot.dispose();
 	}
 
 	public OrthogonalTiledMapRenderer getTiledMapRenderer() {

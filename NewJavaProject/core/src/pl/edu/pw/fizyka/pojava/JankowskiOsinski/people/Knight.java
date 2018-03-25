@@ -15,7 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Knight extends Person {
-	
+
 	// nazwa pliku z rycerzem
 	public static final String toFilePath = "person2.png";
 
@@ -75,10 +75,12 @@ public class Knight extends Person {
 		stateTime += delta;
 
 		if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)
-				&& !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)) {
+				&& !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)
+				&& !Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.W)
+				&& !Gdx.input.isKeyPressed(Input.Keys.D) && !Gdx.input.isKeyPressed(Input.Keys.S)) {
 			walkBatch.draw(downWalk[0], position.x, position.y);
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
 			if (!(camera.position.x < 270)) {
 				camera.translate(-3, 0);
 				position.x -= 3;
@@ -86,7 +88,7 @@ public class Knight extends Person {
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
+		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 			if (!(camera.position.x > 1771)) {
 				camera.translate(3, 0);
 				position.x += 3;
@@ -94,14 +96,14 @@ public class Knight extends Person {
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
-		if (Gdx.input.isKeyPressed(Input.Keys.DOWN))
+		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
 			if (!(camera.position.y < 220)) {
 				camera.translate(0, -3);
 				position.y -= 3;
 				currentFrame = walkAnimationDown.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
-		if (Gdx.input.isKeyPressed(Input.Keys.UP))
+		if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
 			if (!(camera.position.y > 1799)) {
 				camera.translate(0, 3);
 				position.y += 3;

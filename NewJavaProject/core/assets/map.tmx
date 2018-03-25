@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="18">
+<map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="25">
  <tileset firstgid="1" source="mountain_landscape.tsx"/>
  <tileset firstgid="257" source="../../../../Pulpit/Tiled/PathAndObjects.tsx"/>
  <tileset firstgid="513" source="golden_dragon.tsx"/>
  <tileset firstgid="514" source="goblin_new.tsx"/>
  <tileset firstgid="515" source="blizzard_demon.tsx"/>
+ <tileset firstgid="516" source="person2.tsx"/>
  <layer name="ground" width="64" height="64">
   <data encoding="csv">
 79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,79,
@@ -77,9 +78,22 @@
   <properties>
    <property name="HP" value="100"/>
   </properties>
-  <object id="7" name="dragon" type="enemy" gid="513" x="1611.72" y="341.863" width="50" height="50"/>
+  <object id="7" name="dragon" type="enemy" gid="513" x="1589" y="394" width="50" height="50">
+   <properties>
+    <property name="xPos" type="float" value="1589"/>
+    <property name="yPos" type="float" value="394"/>
+   </properties>
+  </object>
   <object id="14" name="goblin" type="enemy" gid="514" x="1240.92" y="956.75" width="50" height="50"/>
-  <object id="17" name="demon" type="enemy" gid="515" x="1614.67" y="1333.17" width="50" height="50"/>
+  <object id="17" name="demon" type="enemy" gid="515" x="1588.17" y="1340.67" width="50" height="50"/>
+ </objectgroup>
+ <objectgroup name="player">
+  <object id="18" name="player" x="350.333" y="333.333" width="39.6667" height="35.6667">
+   <properties>
+    <property name="xPos" type="float" value="350"/>
+    <property name="yPos" type="float" value="330"/>
+   </properties>
+  </object>
  </objectgroup>
  <layer name="top" width="64" height="64">
   <data encoding="csv">
