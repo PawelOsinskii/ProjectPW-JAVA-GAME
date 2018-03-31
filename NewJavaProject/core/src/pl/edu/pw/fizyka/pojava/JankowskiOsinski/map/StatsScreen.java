@@ -18,11 +18,14 @@ public class StatsScreen implements Screen {
 	private static final float xOffset = 250;
 	private static final float yOffset = 30;
 
-	
 	String statsString;
-
+	MapScreen mapScreen;
 	BitmapFont font;
 	SpriteBatch textDisplay;
+
+	public StatsScreen(MapScreen mapScreen) {
+		this.mapScreen = mapScreen;
+	}
 
 	@Override
 	public void show() {
@@ -30,11 +33,11 @@ public class StatsScreen implements Screen {
 		textDisplay = new SpriteBatch();
 		font.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		font.getData().setScale(FONT_SCALE);
-		
-		// here i have to get to know person from the main screen
-		statsString = "Gold : " + Person.GOLD_START;
-		statsString += "\nHP : " + Person.HP_START + "\nMana : " + Person.MANA_START;
-		statsString += "\nAttack level : " + Person.ATTACK_LEVEL_START + "\nMagic level : " + Person.MAGIC_LEVEL_START;
+
+		statsString = "Gold : " + mapScreen.getKnight().getGold();
+		statsString += "\nHP : " + mapScreen.getKnight().getHp() + "\nMana : " + mapScreen.getKnight().getMana();
+		statsString += "\nAttack level : " + mapScreen.getKnight().getAttackLevel() + "\nMagic level : "
+				+ mapScreen.getKnight().getMagicLevel();
 	}
 
 	@Override

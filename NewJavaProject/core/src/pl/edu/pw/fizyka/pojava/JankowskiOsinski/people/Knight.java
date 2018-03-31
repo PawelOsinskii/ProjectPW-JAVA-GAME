@@ -2,16 +2,16 @@ package pl.edu.pw.fizyka.pojava.JankowskiOsinski.people;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Knight extends Person {
@@ -40,7 +40,7 @@ public class Knight extends Person {
 
 	public Knight(OrthographicCamera camera) {
 
-		super(toFilePath, new Vector2(MapScreen.startPositionX, MapScreen.startPositionY));
+		super(toFilePath, new Vector2(Constants.startPositionX, Constants.startPositionY));
 		this.camera = camera;
 		// animation
 		walkSheet = new Texture(Gdx.files.internal(toFilePath));
@@ -119,6 +119,13 @@ public class Knight extends Person {
 		walkBatch.dispose();
 		walkSheet.dispose();
 		super.dispose();
+	}
+
+	public boolean isCollideWithBots(Bot bots) {
+		for(MapObject obj : bots.monsterList) {
+			// dokoncz potem !
+		}
+		return false;
 	}
 
 }

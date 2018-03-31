@@ -15,7 +15,7 @@ public class MyGdxGame extends Game {
 	@Override
 	public void create() {
 		mapScreen = new MapScreen();
-		statsScreen = new StatsScreen();
+		statsScreen = new StatsScreen(mapScreen);
 		this.setScreen(mapScreen);
 		Gdx.input.setInputProcessor(new ScreenSwitcher(this, mapScreen, statsScreen));
 	}

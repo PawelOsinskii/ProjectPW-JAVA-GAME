@@ -10,36 +10,33 @@ import com.badlogic.gdx.Input.Keys;
 public class ScreenSwitcher extends InputAdapter {
 
 	Game game;
-	MapScreen screenMap;
+	MapScreen mapScreen;
 	Screen statsScreen;
 	int currentScreen;
 	Vector2 posCamera;
 	Vector2 posPlayer;
-	
-	
 
 	public ScreenSwitcher(Game game, MapScreen screenMap, Screen statsScreen) {
 		this.game = game;
-		this.screenMap = screenMap;
+		this.mapScreen = screenMap;
 		this.statsScreen = statsScreen;
 		currentScreen = 1;
 	}
 
-	// Use I to change screens !
+	// Use I to change screens 
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Keys.I) {
 			if (currentScreen == 1) {
 				currentScreen = 2;
-				posCamera = new Vector2(screenMap.camera.position.x, screenMap.camera.position.y);
-				posPlayer = new Vector2(screenMap.getKnight().getPosition().x, screenMap.getKnight().getPosition().y);
+				posCamera = new Vector2(mapScreen.camera.position.x, mapScreen.camera.position.y);
+				posPlayer = new Vector2(mapScreen.getKnight().getPosition().x, mapScreen.getKnight().getPosition().y);
 				game.setScreen(statsScreen);
 			} else {
 				currentScreen = 1;
-				game.setScreen(screenMap);
-				screenMap.camera.position.set(new Vector3(posCamera.x, posCamera.y, 0));
-				screenMap.getKnight().getPosition().set(posPlayer);
-
+				game.setScreen(mapScreen);
+				mapScreen.camera.position.set(new Vector3(posCamera.x, posCamera.y, 0));
+				mapScreen.getKnight().getPosition().set(posPlayer);
 			}
 		}
 		return true;
@@ -47,11 +44,16 @@ public class ScreenSwitcher extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// tu sprawdzam czy nacisnalem dragon, ale wymaga poprawy,bo sa inne wspolrzedne !!
-		if(screenX == screenMap.bots.position("dragon").x) {
-			System.out.println("yeah");
+		// ok działa sprawdza pozycje myszki i dragona !!
+		Vector3 worldCoords = new Vector3(screenX, screenY, 0);
+		mapScreen.camera.unproject(worldCoords);
+		mapScreen.bots.position("dragon").x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE
+				- mapScreen.bots.position("dragon").x;
+		if (Math.abs(worldCoords.x - mapScreen.bots.position("dragon").x) < MapScreen.TILE_SIZE) {
+			// zwiększenie attack lvl za kazdym nasicnieciem na dragona
+			mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() + 1);
 		}
-		System.out.println(screenMap.bots.position("d"));
+		
 		return false;
 	}
 }

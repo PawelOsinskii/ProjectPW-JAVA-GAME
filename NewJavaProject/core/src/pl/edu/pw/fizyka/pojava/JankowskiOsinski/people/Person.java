@@ -1,13 +1,8 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.people;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
@@ -35,7 +30,7 @@ public abstract class Person implements Stats {
 		this.shielding = Stats.SHIELDING_START; // Starting defense level
 		this.magicLevel = Stats.MAGIC_LEVEL_START; // Minimum magic level
 		this.attackLevel = Stats.ATTACK_LEVEL_START; // Minimum attack level
-		this.setGold(Stats.GOLD_START);
+		this.gold = Stats.GOLD_START;
 		//position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
 		this.position = position;
 		spriteBatch = new SpriteBatch();

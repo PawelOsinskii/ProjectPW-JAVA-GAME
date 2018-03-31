@@ -1,12 +1,9 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.people;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
-import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 
 public class Wizard extends Person {
 
@@ -14,7 +11,7 @@ public class Wizard extends Person {
 	public int spellCost = 10;
 
 	public Wizard(OrthographicCamera camera) {
-		super(toFilePath,new Vector2(MapScreen.startPositionX, MapScreen.startPositionY));
+		super(toFilePath,new Vector2(Constants.startPositionX, Constants.startPositionY));
 	}
 
 	

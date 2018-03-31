@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" tiledversion="1.1.2" orientation="orthogonal" renderorder="right-down" width="64" height="64" tilewidth="32" tileheight="32" infinite="0" nextobjectid="25">
  <tileset firstgid="1" source="mountain_landscape.tsx"/>
- <tileset firstgid="257" source="../../../../Pulpit/Tiled/PathAndObjects.tsx"/>
+ <tileset firstgid="257" source="PathAndObjects.tsx"/>
  <tileset firstgid="513" source="golden_dragon.tsx"/>
  <tileset firstgid="514" source="goblin_new.tsx"/>
  <tileset firstgid="515" source="blizzard_demon.tsx"/>
