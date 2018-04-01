@@ -78,14 +78,24 @@
   <properties>
    <property name="HP" value="100"/>
   </properties>
-  <object id="7" name="dragon" type="enemy" gid="513" x="1589" y="394" width="50" height="50">
+  <object id="7" name="dragon" type="enemy" gid="513" x="1604.67" y="401.333" width="50" height="50">
    <properties>
     <property name="xPos" type="float" value="1589"/>
     <property name="yPos" type="float" value="394"/>
    </properties>
   </object>
-  <object id="14" name="goblin" type="enemy" gid="514" x="1240.92" y="956.75" width="50" height="50"/>
-  <object id="17" name="demon" type="enemy" gid="515" x="1588.17" y="1340.67" width="50" height="50"/>
+  <object id="14" name="goblin" type="enemy" gid="514" x="1234.92" y="958.083" width="50" height="50">
+   <properties>
+    <property name="xPos" type="float" value="1240.92"/>
+    <property name="yPos" type="float" value="956.75"/>
+   </properties>
+  </object>
+  <object id="17" name="demon" type="enemy" gid="515" x="1588.17" y="1340.67" width="50" height="50">
+   <properties>
+    <property name="xPos" type="float" value="1588.17"/>
+    <property name="yPos" type="float" value="1340.67"/>
+   </properties>
+  </object>
  </objectgroup>
  <objectgroup name="player">
   <object id="18" name="player" x="350.333" y="333.333" width="39.6667" height="35.6667">

@@ -23,7 +23,7 @@ public class ScreenSwitcher extends InputAdapter {
 		currentScreen = 1;
 	}
 
-	// Use I to change screens 
+	// Use I to change screens
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Keys.I) {
@@ -47,13 +47,14 @@ public class ScreenSwitcher extends InputAdapter {
 		// ok działa sprawdza pozycje myszki i dragona !!
 		Vector3 worldCoords = new Vector3(screenX, screenY, 0);
 		mapScreen.camera.unproject(worldCoords);
-		mapScreen.bots.position("dragon").x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE
-				- mapScreen.bots.position("dragon").x;
-		if (Math.abs(worldCoords.x - mapScreen.bots.position("dragon").x) < MapScreen.TILE_SIZE) {
-			// zwiększenie attack lvl za kazdym nasicnieciem na dragona
-			mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() + 1);
+		mapScreen.bots.position(0).x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE - mapScreen.bots.position(0).x;
+		for (int i = 0; i < mapScreen.bots.getMonsterList().size(); i++) {
+			if (Math.abs(worldCoords.x - mapScreen.bots.position(i).x) < MapScreen.TILE_SIZE) {
+				// zwiększenie attack lvl za kazdym nasicnieciem na dragona
+				mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() + 1);
+			}
 		}
-		
+
 		return false;
 	}
 }

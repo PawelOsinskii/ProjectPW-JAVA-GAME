@@ -1,9 +1,7 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
-import java.util.HashMap;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.loaders.resolvers.ExternalFileHandleResolver;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -14,6 +12,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
@@ -30,6 +29,7 @@ public class MapScreen implements Screen {
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
+	MyMusic music;
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 3 };
@@ -40,34 +40,33 @@ public class MapScreen implements Screen {
 	boolean isFirstInit = true;
 	boolean isZooming = false;
 
-	// to change map
-	HashMap<String, Vector2> mapsNameAndCoords;
-
-	int i=1;
 	@Override
 	public void show() {
-		// aby nie resetowały się statystyki bohatera 
+		// aby nie resetowały się statystyki bohatera
 		if (isFirstInit) {
-			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName);
+			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName,Constants.FORREST_MUSIC);
 			isFirstInit = false;
 		}
 		// knight.isCollideWithSecondLayer(tiledMapRenderer);
-		mapsNameAndCoords = new HashMap<>();
-		mapsNameAndCoords.put(Constants.mapName, new Vector2(Constants.startPositionX, Constants.startPositionY));
-		mapsNameAndCoords.put(Constants.mapName, new Vector2(690, 1100));
 	}
 
 	// initialize variable
-	private void init(float posX, float posY, String map) {
+	private void init(float posX, float posY, String map,String musicName) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
+		music = new MyMusic(musicName);
+		music.startPlay();
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
 		tiledMap = new TmxMapLoader().load(map);
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
-		knight = new Knight(camera);
-		bots = new Bot(tiledMapRenderer);
-
+		knight = new Knight(camera, new Vector2(posX, posY));
+		// tak zrobilem, bo nie ma botow na nowej mapie !
+		try {
+			bots = new Bot(tiledMapRenderer);
+		} catch (Exception ex) {
+		}
+		// żeby znaleźć rozmiar mapy
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapRenderer.getMap().getLayers().get(0);
 		MAP_WIDTH = layer.getTileWidth() * layer.getWidth();
 		MAP_HEIGHT = layer.getTileHeight() * layer.getHeight();
@@ -87,15 +86,15 @@ public class MapScreen implements Screen {
 		tiledMapRenderer.setView(camera);
 		if (isFirstMap) {
 			tiledMapRenderer.render(layerBottom);
-			knight.update(delta, this);
 			bots.update(delta);
-			// knight.isCollideWithSecondLayer(this);
+			knight.update(delta, this);
 			tiledMapRenderer.render(layerTop);
 		}
 		// tu teleport do innej mapy !
 		if (!isFirstMap) {
-			// nie ma pliku terrain_atlas.png -> Pawel wyśle później
-			tiledMapRenderer.render();
+			// jeszcze jakies boty
+			tiledMapRenderer.render(layerBottom);
+			knight.update(delta, this);
 		}
 		// Zoom out effect and reseting map
 		if (isEndOfGame(knight, getTiledMapRenderer())) {
@@ -103,8 +102,9 @@ public class MapScreen implements Screen {
 			isZooming = false;
 			while (!isZooming) {
 				if (TimeUtils.timeSinceNanos(endTime) > 10000000) {
-					init(Constants.startPositionX, Constants.startPositionY, Constants.nextMapName);
 					isFirstMap = false;
+					music.stopPlay();
+					init(Constants.endPositionX, Constants.endPositionY, Constants.nextMapName,Constants.DESSERT_MUSIC);
 					isZooming = true;
 					endTime = TimeUtils.nanoTime();
 				}
@@ -134,7 +134,6 @@ public class MapScreen implements Screen {
 		}
 
 		// pozycja posągu (650,1140) + 32
-		// cos nie dziala, ma byc w okregu o promieniu R = 50
 		if (((Math.pow(person.getPosition().x - 650, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60
 				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1172, 2))) < 60
 				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60

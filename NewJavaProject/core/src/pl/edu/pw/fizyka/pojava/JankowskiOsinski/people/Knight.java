@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 
-import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Knight extends Person {
@@ -38,9 +37,9 @@ public class Knight extends Person {
 	Animation<TextureRegion> walkAnimationLeft;
 	TextureRegion currentFrame;
 
-	public Knight(OrthographicCamera camera) {
+	public Knight(OrthographicCamera camera, Vector2 pos) {
 
-		super(toFilePath, new Vector2(Constants.startPositionX, Constants.startPositionY));
+		super(toFilePath, pos);
 		this.camera = camera;
 		// animation
 		walkSheet = new Texture(Gdx.files.internal(toFilePath));
@@ -82,31 +81,31 @@ public class Knight extends Person {
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
 			if (!(camera.position.x < 270)) {
-				camera.translate(-3, 0);
-				position.x -= 3;
+				camera.translate(-WALK_SPEED, 0);
+				position.x -= WALK_SPEED;
 				currentFrame = walkAnimationLeft.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
 			if (!(camera.position.x > 1771)) {
-				camera.translate(3, 0);
-				position.x += 3;
+				camera.translate(WALK_SPEED, 0);
+				position.x += WALK_SPEED;
 				currentFrame = walkAnimationRight.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
 			if (!(camera.position.y < 220)) {
-				camera.translate(0, -3);
-				position.y -= 3;
+				camera.translate(0, -WALK_SPEED);
+				position.y -= WALK_SPEED;
 				currentFrame = walkAnimationDown.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
 			if (!(camera.position.y > 1799)) {
-				camera.translate(0, 3);
-				position.y += 3;
+				camera.translate(0, WALK_SPEED);
+				position.y += WALK_SPEED;
 				currentFrame = walkAnimationUp.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
 			}
@@ -122,7 +121,7 @@ public class Knight extends Person {
 	}
 
 	public boolean isCollideWithBots(Bot bots) {
-		for(MapObject obj : bots.monsterList) {
+		for (MapObject obj : bots.monsterList) {
 			// dokoncz potem !
 		}
 		return false;

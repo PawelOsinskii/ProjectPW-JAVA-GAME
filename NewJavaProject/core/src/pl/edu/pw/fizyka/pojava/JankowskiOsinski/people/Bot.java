@@ -21,12 +21,14 @@ public class Bot {
 
 	public Bot(TextureMapObjectRenderer tiledMapRenderer) {
 		this.tiledMapRenderer = tiledMapRenderer;
-		monsterLayer = tiledMapRenderer.getMap().getLayers().get("monster");
-		monsterObjects = monsterLayer.getObjects();
-		monsterList = new ArrayList<>();
-		monsterList.add(monsterObjects.get("dragon"));
-		monsterList.add(monsterObjects.get("goblin"));
-		monsterList.add(monsterObjects.get("demon"));
+		try {
+			monsterLayer = tiledMapRenderer.getMap().getLayers().get("monster");
+			monsterObjects = monsterLayer.getObjects();
+			monsterList = new ArrayList<>();
+			monsterList.add(monsterObjects.get("dragon"));
+			monsterList.add(monsterObjects.get("goblin"));
+			monsterList.add(monsterObjects.get("demon"));
+		} catch (Exception ex) {}
 	}
 
 	public void update(float delta) {
@@ -35,10 +37,14 @@ public class Bot {
 		}
 	}
 
-	// getting position of the monster 
-	public Vector2 position(String which) {
-		return new Vector2((float)monsterList.get(0).getProperties().get("xPos"),
-				(float)monsterList.get(0).getProperties().get("yPos"));
+	// getting position of the monster
+	public Vector2 position(int which) {
+		return new Vector2((float) monsterList.get(which).getProperties().get("xPos"),
+				(float) monsterList.get(which).getProperties().get("yPos"));
+	}
+
+	public List<MapObject> getMonsterList() {
+		return monsterList;
 	}
 
 }
