@@ -16,6 +16,7 @@ import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Stats;
 
 public class MapScreen implements Screen {
 
@@ -44,23 +45,30 @@ public class MapScreen implements Screen {
 	public void show() {
 		// aby nie resetowały się statystyki bohatera
 		if (isFirstInit) {
-			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName,Constants.FORREST_MUSIC);
+			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName, Constants.FORREST_MUSIC);
+			initPlayer(Constants.startPositionX, Constants.startPositionY);
 			isFirstInit = false;
 		}
 		// knight.isCollideWithSecondLayer(tiledMapRenderer);
 	}
 
+	private void initPlayer(float posX, float posY) {
+		knight.loadStartingStart();
+	}
+
 	// initialize variable
-	private void init(float posX, float posY, String map,String musicName) {
+	private void init(float posX, float posY, String map, String musicName) {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		music = new MyMusic(musicName);
 		music.startPlay();
+
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, width, height);
 		tiledMap = new TmxMapLoader().load(map);
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 		knight = new Knight(camera, new Vector2(posX, posY));
+
 		// tak zrobilem, bo nie ma botow na nowej mapie !
 		try {
 			bots = new Bot(tiledMapRenderer);
@@ -101,10 +109,16 @@ public class MapScreen implements Screen {
 			long endTime = TimeUtils.nanoTime();
 			isZooming = false;
 			while (!isZooming) {
-				if (TimeUtils.timeSinceNanos(endTime) > 10000000) {
+				if (TimeUtils.timeSinceNanos(endTime) > 100000000) {
 					isFirstMap = false;
 					music.stopPlay();
-					init(Constants.endPositionX, Constants.endPositionY, Constants.nextMapName,Constants.DESSERT_MUSIC);
+					// save stats before changing the map !
+					int[] stats = { knight.getHp(), knight.getMana(), knight.getGold(), knight.getAttackLevel(),
+							knight.getMagicLevel(), knight.getShielding() };
+					knight.getWalkMusic().stopPlay();
+					init(Constants.endPositionX, Constants.endPositionY, Constants.nextMapName,
+							Constants.DESSERT_MUSIC);
+					knight.saveStats(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5]);
 					isZooming = true;
 					endTime = TimeUtils.nanoTime();
 				}

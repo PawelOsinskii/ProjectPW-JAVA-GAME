@@ -11,7 +11,7 @@ public final class Constants {
 
 	public static final int startPositionX = 352;
 	public static final int startPositionY = 1679;
-	
+
 	// only for tests
 	public static final float endPositionX = 1000;
 	public static final float endPositionY = 1000;
@@ -19,7 +19,9 @@ public final class Constants {
 	// music
 	public static final String FORREST_MUSIC = "music.mp3";
 	public static final String DESSERT_MUSIC = "caravan.ogg.ogg";
-	
+	public static final String WALK_MUSIC = "footstep.ogg";
+	public static final float WALK_MUSIC_VOLUME = 0.1f;
+
 	public static float MAP_HEIGHT;
 	public static float MAP_WIDTH;
 	public static float TILE_SIZE;
