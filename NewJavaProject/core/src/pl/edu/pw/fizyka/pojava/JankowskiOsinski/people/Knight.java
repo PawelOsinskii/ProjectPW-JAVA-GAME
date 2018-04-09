@@ -11,6 +11,8 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class Knight extends Person {
@@ -25,6 +27,7 @@ public class Knight extends Person {
 	TextureRegion[][] textureRegion;
 	SpriteBatch walkBatch;
 	public OrthographicCamera camera;
+	private MyMusic walkMusic;
 
 	// Podzial na cztery kierunki chodzenia
 	TextureRegion[] upWalk;
@@ -41,6 +44,7 @@ public class Knight extends Person {
 
 		super(toFilePath, pos);
 		this.camera = camera;
+		walkMusic = new MyMusic(Constants.WALK_MUSIC);
 		// animation
 		walkSheet = new Texture(Gdx.files.internal(toFilePath));
 		walkSheet.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
@@ -72,11 +76,12 @@ public class Knight extends Person {
 		camera.update();
 		walkBatch.begin();
 		stateTime += delta;
-
+		walkMusic.setLevel(Constants.WALK_MUSIC_VOLUME);
 		if (!Gdx.input.isKeyPressed(Input.Keys.LEFT) && !Gdx.input.isKeyPressed(Input.Keys.RIGHT)
 				&& !Gdx.input.isKeyPressed(Input.Keys.UP) && !Gdx.input.isKeyPressed(Input.Keys.DOWN)
 				&& !Gdx.input.isKeyPressed(Input.Keys.A) && !Gdx.input.isKeyPressed(Input.Keys.W)
 				&& !Gdx.input.isKeyPressed(Input.Keys.D) && !Gdx.input.isKeyPressed(Input.Keys.S)) {
+			walkMusic.stopPlay();
 			walkBatch.draw(downWalk[0], position.x, position.y);
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.LEFT) || Gdx.input.isKeyPressed(Input.Keys.A)) {
@@ -85,6 +90,7 @@ public class Knight extends Person {
 				position.x -= WALK_SPEED;
 				currentFrame = walkAnimationLeft.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
+				walkMusic.startPlay();
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.RIGHT) || Gdx.input.isKeyPressed(Input.Keys.D)) {
@@ -93,6 +99,7 @@ public class Knight extends Person {
 				position.x += WALK_SPEED;
 				currentFrame = walkAnimationRight.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
+				walkMusic.startPlay();
 			}
 		}
 		if (Gdx.input.isKeyPressed(Input.Keys.DOWN) || Gdx.input.isKeyPressed(Input.Keys.S))
@@ -101,6 +108,7 @@ public class Knight extends Person {
 				position.y -= WALK_SPEED;
 				currentFrame = walkAnimationDown.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
+				walkMusic.startPlay();
 			}
 		if (Gdx.input.isKeyPressed(Input.Keys.UP) || Gdx.input.isKeyPressed(Input.Keys.W))
 			if (!(camera.position.y > 1799)) {
@@ -108,6 +116,7 @@ public class Knight extends Person {
 				position.y += WALK_SPEED;
 				currentFrame = walkAnimationUp.getKeyFrame(stateTime, true);
 				walkBatch.draw(currentFrame, position.x, position.y);
+				walkMusic.startPlay();
 			}
 		walkBatch.end();
 
@@ -125,6 +134,14 @@ public class Knight extends Person {
 			// dokoncz potem !
 		}
 		return false;
+	}
+
+	public MyMusic getWalkMusic() {
+		return walkMusic;
+	}
+
+	public void setWalkMusic(MyMusic walkMusic) {
+		this.walkMusic = walkMusic;
 	}
 
 }

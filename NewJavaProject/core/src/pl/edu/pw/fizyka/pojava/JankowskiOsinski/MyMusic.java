@@ -8,7 +8,7 @@ public class MyMusic {
 
 	// "caravan.ogg.ogg" - pustynia
 	// "music.mp3" - las
-
+	// "footstep.ogg" - chodzenie
 	FileHandle fileMusic;
 	Music music;
 
@@ -19,10 +19,15 @@ public class MyMusic {
 
 	public void startPlay() {
 		music.play();
+		music.setLooping(true);
 	}
 
 	public void stopPlay() {
 		music.stop();
+	}
+	
+	public void setLevel(float volume) {
+		music.setVolume(volume);
 	}
 
 }

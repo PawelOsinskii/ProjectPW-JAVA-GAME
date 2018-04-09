@@ -23,18 +23,31 @@ public abstract class Person implements Stats {
 	// Coordinates of Person
 	protected Vector2 position;
 
-	public Person(String pathToFile,Vector2 position) {
+	public Person(String pathToFile, Vector2 position) {
+		// loadStartingStart();
+
+		// position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
+		this.position = position;
+		spriteBatch = new SpriteBatch();
+		texture = new Texture(Gdx.files.internal(pathToFile));
+	}
+
+	public void loadStartingStart() {
 		this.hp = Stats.HP_START;
 		this.mana = Stats.MANA_START;
-		this.speed = Stats.SPEED_START;
 		this.shielding = Stats.SHIELDING_START; // Starting defense level
 		this.magicLevel = Stats.MAGIC_LEVEL_START; // Minimum magic level
 		this.attackLevel = Stats.ATTACK_LEVEL_START; // Minimum attack level
 		this.gold = Stats.GOLD_START;
-		//position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
-		this.position = position;
-		spriteBatch = new SpriteBatch();
-		texture = new Texture(Gdx.files.internal(pathToFile));
+	}
+
+	public void saveStats(int hp,int mana,int gold,int attack,int magic,int shield) {
+		this.setAttackLevel(attack);
+		this.setGold(gold);
+		this.setHp(hp);
+		//this.setMagicLevel(magic);
+		this.setMana(mana);
+		this.setShielding(shield);
 	}
 
 	public void update(float delta) {
