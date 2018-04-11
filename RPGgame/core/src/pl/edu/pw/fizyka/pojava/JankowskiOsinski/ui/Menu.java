@@ -38,7 +38,7 @@ public class Menu implements Screen {
 
 	public Menu(RPGgame game) {
 		this.game = game;
-		logMenu = new LogMenu(game);
+		logMenu = new LogMenu(game,this);
 	}
 
 	@Override
@@ -46,8 +46,8 @@ public class Menu implements Screen {
 		assetManager = new AssetManager();
 		assetManager.load("uiskin.json", Skin.class);
 		assetManager.finishLoading();
-		startButton = new TextButton("Start", assetManager.get("uiskin.json", Skin.class));
-		loadButton = new TextButton("Load", assetManager.get("uiskin.json", Skin.class));
+		startButton = new TextButton("New game", assetManager.get("uiskin.json", Skin.class));
+		loadButton = new TextButton("Load game", assetManager.get("uiskin.json", Skin.class));
 		quitButton = new TextButton("Exit", assetManager.get("uiskin.json", Skin.class));
 		startButton.setColor(Color.YELLOW);
 		loadButton.setColor(Color.RED);

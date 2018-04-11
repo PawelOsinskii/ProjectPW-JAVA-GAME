@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -18,6 +19,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.RPGgame;
@@ -36,9 +39,11 @@ public class LogMenu implements Screen {
 	private AssetManager assetManager;
 
 	private RPGgame game;
+	private Menu menu;
 
-	public LogMenu(RPGgame game) {
+	public LogMenu(RPGgame game, Menu menu) {
 		this.game = game;
+		this.menu = menu;
 	}
 
 	@Override
@@ -54,6 +59,7 @@ public class LogMenu implements Screen {
 		passwordLabel = new Label("Password: ", assetManager.get("uiskin.json", Skin.class));
 		loginField = new TextField("", assetManager.get("uiskin.json", Skin.class));
 		passwordArea = new TextArea("", assetManager.get("uiskin.json", Skin.class));
+		final Dialog dialog = new Dialog("Wrong login or password", assetManager.get("uiskin.json", Skin.class));
 		loginButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -62,12 +68,22 @@ public class LogMenu implements Screen {
 					// tu trzeba pobrac statystyki bohatera z bazy danych
 					game.loadGame();
 				} else {
-					// komunikat
-					loginButton.setColor(Color.RED);
-					// to nie działa
+					dialog.show(stage);
+					Timer.schedule(new Task() {
+						@Override
+						public void run() {
+							dialog.hide();
+						}
+					}, 2);
+					loginField.setText("");
 					passwordArea.setText("");
 				}
-
+			}
+		});
+		returnButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				game.setScreen(menu);
 			}
 		});
 

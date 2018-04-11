@@ -34,6 +34,7 @@ public class LogIn {
 			ResultSet rs = stmt.executeQuery(
 					"SELECT * FROM players WHERE login = '" + login + "' AND password = '" + password + "'");
 			isLog = rs.next();
+
 			while (rs.next()) {
 				System.out.println(rs.getInt("skill"));
 				break;
