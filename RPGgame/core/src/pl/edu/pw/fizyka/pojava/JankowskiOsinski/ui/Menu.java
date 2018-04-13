@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.RPGgame;
 
 public class Menu implements Screen {
@@ -38,7 +40,7 @@ public class Menu implements Screen {
 
 	public Menu(RPGgame game) {
 		this.game = game;
-		logMenu = new LogMenu(game,this);
+		logMenu = new LogMenu(game, this);
 	}
 
 	@Override
@@ -76,7 +78,6 @@ public class Menu implements Screen {
 		table.setWidth(stage.getWidth());
 		table.align(Align.center | Align.top);
 		table.setPosition(0, Gdx.graphics.getHeight());
-
 		table.padTop(50);
 		table.add(startButton).padBottom(50);
 		table.row();
@@ -85,17 +86,27 @@ public class Menu implements Screen {
 		table.add(quitButton);
 		table.row();
 		table.add(textArea).size(300, 40);
-
 		stage.addActor(table);
 		Gdx.input.setInputProcessor(stage);
+
+		batch = new SpriteBatch();
+		sprite = new Sprite(new Texture(Gdx.files.internal(Constants.BACKGROUND_IMAGE)));
+		sprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 	}
 
 	@Override
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		renderBackgroundImage();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
+	}
+
+	public void renderBackgroundImage() {
+		batch.begin();
+		sprite.draw(batch);
+		batch.end();
 	}
 
 	@Override

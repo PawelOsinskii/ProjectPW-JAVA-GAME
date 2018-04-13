@@ -7,44 +7,57 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+
 public class ScreenSwitcher extends InputAdapter {
 
 	Game game;
 	MapScreen mapScreen;
-	Screen statsScreen;
-	int currentScreen;
+	StatsScreen statsScreen;
+	Shop shop;
+	int currentScreen = Constants.MAP_SCREEN;
 	Vector2 posCamera;
 	Vector2 posPlayer;
 
-	public ScreenSwitcher(Game game, MapScreen screenMap, Screen statsScreen) {
+	public ScreenSwitcher(Game game, MapScreen screenMap, StatsScreen statsScreen, Shop shop) {
 		this.game = game;
 		this.mapScreen = screenMap;
 		this.statsScreen = statsScreen;
-		currentScreen = 1;
+		this.shop = shop;
 	}
 
-	// Use I to change screens
+	// Use 'I' to change screens
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Keys.I) {
-			if (currentScreen == 1) {
-				currentScreen = 2;
+			if (currentScreen == Constants.MAP_SCREEN) {
+				currentScreen = Constants.STATS_SCREEN;
 				posCamera = new Vector2(mapScreen.camera.position.x, mapScreen.camera.position.y);
 				posPlayer = new Vector2(mapScreen.getKnight().getPosition().x, mapScreen.getKnight().getPosition().y);
 				game.setScreen(statsScreen);
-			} else {
-				currentScreen = 1;
+			} else if (currentScreen == Constants.STATS_SCREEN) {
+				currentScreen = Constants.MAP_SCREEN;
 				game.setScreen(mapScreen);
 				mapScreen.camera.position.set(new Vector3(posCamera.x, posCamera.y, 0));
 				mapScreen.getKnight().getPosition().set(posPlayer);
 			}
+		}
+		if (keycode == Keys.SPACE) {
+			if (currentScreen == Constants.MAP_SCREEN) {
+				game.setScreen(shop);
+				currentScreen = Constants.SHOP_SCREEN;
+			} else if (currentScreen == Constants.SHOP_SCREEN) {
+				game.setScreen(mapScreen);
+				currentScreen = Constants.MAP_SCREEN;
+			}
+
 		}
 		return true;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// do poprawy, bo na pustyni nie ma botów, dlatego wywala błedy 
+		// do poprawy, bo na pustyni nie ma botów, dlatego wywala błedy
 		if (currentScreen == 2) {
 			// ok działa sprawdza pozycje myszki i dragona !!
 			Vector3 worldCoords = new Vector3(screenX, screenY, 0);

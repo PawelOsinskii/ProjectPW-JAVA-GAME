@@ -65,7 +65,7 @@ public class LogMenu implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				// problem z boolean
 				if (LogIn.isLogin(loginField.getText(), passwordArea.getText())) {
-					// tu trzeba pobrac statystyki bohatera z bazy danych
+
 					game.loadGame();
 				} else {
 					dialog.show(stage);
@@ -114,6 +114,7 @@ public class LogMenu implements Screen {
 	public void render(float delta) {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+		menu.renderBackgroundImage();
 		stage.act(Gdx.graphics.getDeltaTime());
 		stage.draw();
 	}

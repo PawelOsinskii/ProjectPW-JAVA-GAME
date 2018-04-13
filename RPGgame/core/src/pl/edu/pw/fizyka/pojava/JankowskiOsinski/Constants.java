@@ -6,6 +6,8 @@ public final class Constants {
 	// test map !
 	public static final String nextMapName = "map4.tmx";
 
+	public static final String BACKGROUND_IMAGE = "background.jpg";
+
 	public static final float ZOOM = 0.45f;
 	public static final float ZOOM_RATE = 0.8f;
 
@@ -25,4 +27,11 @@ public final class Constants {
 	public static float MAP_HEIGHT;
 	public static float MAP_WIDTH;
 	public static float TILE_SIZE;
+
+	public static final int MAP_SCREEN = 1;
+	public static final int STATS_SCREEN = 2;
+	public static final int SHOP_SCREEN = 3;
+
+	public static final int HP_COST = 10;
+
 }

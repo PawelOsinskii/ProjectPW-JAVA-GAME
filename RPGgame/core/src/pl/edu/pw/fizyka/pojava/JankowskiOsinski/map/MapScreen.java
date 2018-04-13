@@ -2,6 +2,7 @@ package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -9,6 +10,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
@@ -30,15 +34,32 @@ public class MapScreen implements Screen {
 	TextureMapObjectRenderer tiledMapRenderer;
 	MyMusic music;
 
+	// to display stats on top of the screen
+	Stage stage;
+	Label statsLabel;
+	AssetManager assetManager;
+	String statsHP;
+	String statsGOLD;
+
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 3 };
 
 	private Knight knight;
 	public Bot bots;
 
-	
 	boolean isFirstInit = true;
 	boolean isZooming = false;
+
+	public MapScreen() {
+		// tutaj dodaj statystyki bohatera do ekranu !
+		stage = new Stage();
+		assetManager = new AssetManager();
+		assetManager.load("uiskin.json", Skin.class);
+		assetManager.finishLoading();
+		statsLabel = new Label("", assetManager.get("uiskin.json", Skin.class));
+		statsLabel.setPosition(20, Gdx.graphics.getHeight() - 50);
+		stage.addActor(statsLabel);
+	}
 
 	@Override
 	public void show() {
@@ -49,6 +70,9 @@ public class MapScreen implements Screen {
 			isFirstInit = false;
 		}
 		// knight.isCollideWithSecondLayer(tiledMapRenderer);
+		statsHP = "HP : " + knight.getHp();
+		statsGOLD = "    GOLD : " + knight.getGold();
+		statsLabel.setText(statsHP + statsGOLD);
 	}
 
 	private void initPlayer(float posX, float posY) {
@@ -67,7 +91,6 @@ public class MapScreen implements Screen {
 		tiledMap = new TmxMapLoader().load(map);
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 		knight = new Knight(camera, new Vector2(posX, posY));
-
 		// tak zrobilem, bo nie ma botow na nowej mapie !
 		try {
 			bots = new Bot(tiledMapRenderer);
@@ -123,6 +146,8 @@ public class MapScreen implements Screen {
 				}
 			}
 		}
+		stage.act(Gdx.graphics.getDeltaTime());
+		stage.draw();
 
 	}
 

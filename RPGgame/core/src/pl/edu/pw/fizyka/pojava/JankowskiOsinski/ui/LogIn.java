@@ -1,19 +1,12 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui;
 
-import java.awt.Dimension;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JTextField;
-import javax.swing.SwingUtilities;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class LogIn {
 
@@ -27,14 +20,11 @@ public class LogIn {
 			}
 			Connection conn = DriverManager.getConnection("jdbc:mysql://sql11.freesqldatabase.com/sql11231478",
 					"sql11231478", "hVqTw9bwik");
-
-			// sql injection
 			Statement stmt = conn.createStatement();
 			// PreparedStatement
 			ResultSet rs = stmt.executeQuery(
 					"SELECT * FROM players WHERE login = '" + login + "' AND password = '" + password + "'");
 			isLog = rs.next();
-
 			while (rs.next()) {
 				System.out.println(rs.getInt("skill"));
 				break;
@@ -46,6 +36,13 @@ public class LogIn {
 			e1.printStackTrace();
 		}
 		return isLog;
+	}
+
+	public static void loadStatsFromServer(MapScreen mapScreen, ResultSet rs) throws SQLException {
+		// pobieranie z bazy danych statystyk gracza
+		// do pobrania dane, cos nie dziala
+		mapScreen.getKnight().setAttackLevel(rs.getInt("skill"));
+		mapScreen.getKnight().setGold(rs.getInt("gold"));
 	}
 
 }
