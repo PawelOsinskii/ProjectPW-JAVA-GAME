@@ -10,6 +10,10 @@ import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 
 public class LogIn {
 
+	public static int gold;
+	public static int attack;
+	public static int magic;
+	
 	public static boolean isLogin(String login, String password) {
 		boolean isLog = false;
 		try {
@@ -25,6 +29,9 @@ public class LogIn {
 			ResultSet rs = stmt.executeQuery(
 					"SELECT * FROM players WHERE login = '" + login + "' AND password = '" + password + "'");
 			isLog = rs.next();
+			gold = rs.getInt("gold");
+			attack = rs.getInt("skill");
+			magic = rs.getInt("magic");
 			while (rs.next()) {
 				System.out.println(rs.getInt("skill"));
 				break;
@@ -38,11 +45,11 @@ public class LogIn {
 		return isLog;
 	}
 
-	public static void loadStatsFromServer(MapScreen mapScreen, ResultSet rs) throws SQLException {
+	public static void loadStatsFromServer(MapScreen mapScreen) {
 		// pobieranie z bazy danych statystyk gracza
-		// do pobrania dane, cos nie dziala
-		mapScreen.getKnight().setAttackLevel(rs.getInt("skill"));
-		mapScreen.getKnight().setGold(rs.getInt("gold"));
+		mapScreen.getKnight().setAttackLevel(LogIn.gold);
+		mapScreen.getKnight().setGold(LogIn.attack);
+		mapScreen.getKnight().setMagicLevel(LogIn.magic);
 	}
 
 }

@@ -33,13 +33,7 @@ public class MapScreen implements Screen {
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
 	MyMusic music;
-
-	// to display stats on top of the screen
-	Stage stage;
-	Label statsLabel;
-	AssetManager assetManager;
-	String statsHP;
-	String statsGOLD;
+	public MapPlayerStats mapPlayerStats;
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 3 };
@@ -51,14 +45,7 @@ public class MapScreen implements Screen {
 	boolean isZooming = false;
 
 	public MapScreen() {
-		// tutaj dodaj statystyki bohatera do ekranu !
-		stage = new Stage();
-		assetManager = new AssetManager();
-		assetManager.load("uiskin.json", Skin.class);
-		assetManager.finishLoading();
-		statsLabel = new Label("", assetManager.get("uiskin.json", Skin.class));
-		statsLabel.setPosition(20, Gdx.graphics.getHeight() - 50);
-		stage.addActor(statsLabel);
+		mapPlayerStats = new MapPlayerStats();
 	}
 
 	@Override
@@ -70,9 +57,7 @@ public class MapScreen implements Screen {
 			isFirstInit = false;
 		}
 		// knight.isCollideWithSecondLayer(tiledMapRenderer);
-		statsHP = "HP : " + knight.getHp();
-		statsGOLD = "    GOLD : " + knight.getGold();
-		statsLabel.setText(statsHP + statsGOLD);
+		mapPlayerStats.show(knight);
 	}
 
 	private void initPlayer(float posX, float posY) {
@@ -146,13 +131,7 @@ public class MapScreen implements Screen {
 				}
 			}
 		}
-		stage.act(Gdx.graphics.getDeltaTime());
-		stage.draw();
-
-	}
-
-	// function to save map,not finished yet
-	public void saveMap() {
+		mapPlayerStats.render();
 	}
 
 	@Override

@@ -63,10 +63,10 @@ public class LogMenu implements Screen {
 		loginButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// problem z boolean
 				if (LogIn.isLogin(loginField.getText(), passwordArea.getText())) {
-
 					game.loadGame();
+					// ładowanie statystyk z bazy danych
+					LogIn.loadStatsFromServer(game.mapScreen);
 				} else {
 					dialog.show(stage);
 					Timer.schedule(new Task() {

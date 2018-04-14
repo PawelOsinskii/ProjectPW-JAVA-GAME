@@ -12,7 +12,7 @@ import pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui.Menu;
 
 public class RPGgame extends Game {
 
-	MapScreen mapScreen;
+	public MapScreen mapScreen;
 	StatsScreen statsScreen;
 	Shop shop;
 	Menu menu;
@@ -28,7 +28,8 @@ public class RPGgame extends Game {
 		statsScreen = new StatsScreen(mapScreen);
 		shop = new Shop(mapScreen);
 		this.setScreen(mapScreen);
-		InputMultiplexer im = new InputMultiplexer(shop.stage, new ScreenSwitcher(this, mapScreen, statsScreen, shop));
+		InputMultiplexer im = new InputMultiplexer(new ScreenSwitcher(this, mapScreen, statsScreen, shop),
+				mapScreen.mapPlayerStats.stage);
 		Gdx.input.setInputProcessor(im);
 	}
 }
