@@ -22,9 +22,10 @@ public class LogIn {
 			} catch (ClassNotFoundException e1) {
 				e1.printStackTrace();
 			}
-			Connection conn = DriverManager.getConnection("jdbc:mysql://sql11.freesqldatabase.com/sql11231478",
-					"sql11231478", "hVqTw9bwik");
-			Statement stmt = conn.createStatement();
+			// 
+			Connection conn = DriverManager.getConnection("jdbc:mysql://mn26.webd.pl/marekb93_rpggame",
+					"marekb93_rpggame", "xBGG)2Jn&b?E?kC+");
+			Statement stmt = conn.createStatement(); 
 			// PreparedStatement
 			ResultSet rs = stmt.executeQuery(
 					"SELECT * FROM players WHERE login = '" + login + "' AND password = '" + password + "'");
