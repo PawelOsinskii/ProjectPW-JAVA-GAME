@@ -6,12 +6,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui.LogIn;
 
 public abstract class Person implements Stats {
 	private int hp; // Health points
 	private int mana; // Mana points
 	private double speed; // Speed of running
-	private int shielding; // Defense skill
+	private int experience; // Experience
 	private int magicLevel; // Magic skill
 	private int attackLevel; // Attack skill
 	private int gold; // Amount of money
@@ -24,7 +25,6 @@ public abstract class Person implements Stats {
 
 	public Person(String pathToFile, Vector2 position) {
 		// loadStartingStart();
-
 		// position = new Vector2(MapScreen.startPositionX, MapScreen.startPositionY);
 		this.position = position;
 		spriteBatch = new SpriteBatch();
@@ -34,19 +34,19 @@ public abstract class Person implements Stats {
 	public void loadStartingStart() {
 		this.hp = Stats.HP_START;
 		this.mana = Stats.MANA_START;
-		this.shielding = Stats.SHIELDING_START; // Starting defense level
-		this.magicLevel = Stats.MAGIC_LEVEL_START; // Minimum magic level
-		this.attackLevel = Stats.ATTACK_LEVEL_START; // Minimum attack level
-		this.gold = Stats.GOLD_START;
+		this.experience = LogIn.exp;
+		this.magicLevel = LogIn.magic;
+		this.attackLevel = LogIn.attack;
+		this.gold = LogIn.gold;
 	}
 
-	public void saveStats(int hp, int mana, int gold, int attack, int magic, int shield) {
+	public void saveStats(int hp, int mana, int gold, int attack, int magic, int experience) {
 		this.setAttackLevel(attack);
 		this.setGold(gold);
 		this.setHp(hp);
 		this.setMagicLevel(magic);
 		this.setMana(mana);
-		this.setShielding(shield);
+		this.setExperience(experience);
 	}
 
 	public void update(float delta) {
@@ -87,12 +87,12 @@ public abstract class Person implements Stats {
 		this.speed = speed;
 	}
 
-	public int getShielding() {
-		return shielding;
+	public int getExperience() {
+		return experience;
 	}
 
-	public void setShielding(int shielding) {
-		this.shielding = shielding;
+	public void setExperience(int experience) {
+		this.experience = experience;
 	}
 
 	public int getMagicLevel() {

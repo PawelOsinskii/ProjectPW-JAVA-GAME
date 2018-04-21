@@ -1,5 +1,10 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui;
 
+import java.awt.Desktop;
+import java.net.URI;
+
+import javax.swing.JOptionPane;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.assets.AssetManager;
@@ -23,6 +28,7 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.RPGgame;
 
 public class LogMenu implements Screen {
@@ -52,14 +58,14 @@ public class LogMenu implements Screen {
 		assetManager.load("uiskin.json", Skin.class);
 		assetManager.finishLoading();
 
-		registerButton = new TextButton("Register", assetManager.get("uiskin.json", Skin.class));
-		loginButton = new TextButton("Login", assetManager.get("uiskin.json", Skin.class));
-		returnButton = new TextButton("Back to menu", assetManager.get("uiskin.json", Skin.class));
-		loginLabel = new Label("Login: ", assetManager.get("uiskin.json", Skin.class));
-		passwordLabel = new Label("Password: ", assetManager.get("uiskin.json", Skin.class));
-		loginField = new TextField("", assetManager.get("uiskin.json", Skin.class));
-		passwordArea = new TextArea("", assetManager.get("uiskin.json", Skin.class));
-		final Dialog dialog = new Dialog("Wrong login or password", assetManager.get("uiskin.json", Skin.class));
+		registerButton = new TextButton("Register", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		loginButton = new TextButton("Login", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		returnButton = new TextButton("Back to menu", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		loginLabel = new Label("Login: ", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		passwordLabel = new Label("Password: ", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		loginField = new TextField("", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		passwordArea = new TextArea("", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		final Dialog dialog = new Dialog("Wrong login or password", assetManager.get(Constants.SKIN_NAME, Skin.class));
 		loginButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
@@ -84,6 +90,18 @@ public class LogMenu implements Screen {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(menu);
+			}
+		});
+		registerButton.addListener(new ClickListener() {
+			@Override
+			public void clicked(InputEvent event, float x, float y) {
+				// link do strony gdzie mozna sie zalogowac
+				Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
+				try {
+					desktop.browse(new URI("https://github.com/javaProjekty"));
+				} catch (Exception ex) {
+					JOptionPane.showMessageDialog(null, "Source is not available");
+				}
 			}
 		});
 

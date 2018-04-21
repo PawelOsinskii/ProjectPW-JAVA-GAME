@@ -51,7 +51,6 @@ public class ScreenSwitcher extends InputAdapter {
 				game.setScreen(mapScreen);
 				currentScreen = Constants.MAP_SCREEN;
 			}
-
 		}
 		return true;
 	}
@@ -59,8 +58,8 @@ public class ScreenSwitcher extends InputAdapter {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		// do poprawy, bo na pustyni nie ma botów, dlatego wywala błedy
-		if (currentScreen == 2) {
-			// ok działa sprawdza pozycje myszki i dragona !!
+		if (currentScreen == Constants.MAP_SCREEN) {
+			// zle dziala, bo klikając na siebie dodaje punkty do poprawy ! 
 			Vector3 worldCoords = new Vector3(screenX, screenY, 0);
 			mapScreen.camera.unproject(worldCoords);
 			mapScreen.bots.position(0).x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE - mapScreen.bots.position(0).x;
@@ -70,6 +69,7 @@ public class ScreenSwitcher extends InputAdapter {
 					mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() + 1);
 				}
 			}
+			System.out.println(mapScreen.getKnight().getAttackLevel());
 		}
 		return false;
 	}

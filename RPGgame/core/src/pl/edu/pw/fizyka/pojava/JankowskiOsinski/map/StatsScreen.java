@@ -27,6 +27,7 @@ public class StatsScreen implements Screen {
 	private Stage stage;
 	private Table table;
 	private Label statsLabel;
+	private Label expLabel;
 	private Label hpLabel;
 	private Label manaLabel;
 	private Label attackLabel;
@@ -46,14 +47,16 @@ public class StatsScreen implements Screen {
 		assetManager = new AssetManager();
 		assetManager.load("uiskin.json", Skin.class);
 		assetManager.finishLoading();
-		statsLabel = new Label("--Statistics--", assetManager.get("uiskin.json", Skin.class));
-		hpLabel = new Label("HP: " + mapScreen.getKnight().getHp(), assetManager.get("uiskin.json", Skin.class));
-		goldLabel = new Label("GOLD: " + mapScreen.getKnight().getGold(), assetManager.get("uiskin.json", Skin.class));
-		manaLabel = new Label("MANA: " + mapScreen.getKnight().getMana(), assetManager.get("uiskin.json", Skin.class));
+		statsLabel = new Label("--Statistics--", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		expLabel = new Label("EXPERIENCE: " + mapScreen.getKnight().getExperience(),
+				assetManager.get(Constants.SKIN_NAME, Skin.class));
+		hpLabel = new Label("HP: " + mapScreen.getKnight().getHp(), assetManager.get(Constants.SKIN_NAME, Skin.class));
+		goldLabel = new Label("GOLD: " + mapScreen.getKnight().getGold(), assetManager.get(Constants.SKIN_NAME, Skin.class));
+		manaLabel = new Label("MANA: " + mapScreen.getKnight().getMana(), assetManager.get(Constants.SKIN_NAME, Skin.class));
 		attackLabel = new Label("ATTACK LEVEL: " + mapScreen.getKnight().getAttackLevel(),
-				assetManager.get("uiskin.json", Skin.class));
+				assetManager.get(Constants.SKIN_NAME, Skin.class));
 		magicLabel = new Label("MAGIC LEVEL: " + mapScreen.getKnight().getMagicLevel(),
-				assetManager.get("uiskin.json", Skin.class));
+				assetManager.get(Constants.SKIN_NAME, Skin.class));
 		stage = new Stage(new ScreenViewport());
 		table = new Table();
 		table.setWidth(stage.getWidth());
@@ -61,8 +64,10 @@ public class StatsScreen implements Screen {
 		table.setPosition(0, Gdx.graphics.getHeight());
 
 		statsLabel.setFontScale(1.75f);
-		statsLabel.setPosition(Gdx.graphics.getWidth() / 3 + 100, Gdx.graphics.getHeight() - 80);
-		table.padTop(100);
+		statsLabel.setPosition(Gdx.graphics.getWidth() / 3 + 70, Gdx.graphics.getHeight() - 80);
+		table.padTop(200);
+		table.row();
+		table.add(expLabel).pad(30);
 		table.row();
 		table.add(hpLabel).pad(30);
 		table.row();

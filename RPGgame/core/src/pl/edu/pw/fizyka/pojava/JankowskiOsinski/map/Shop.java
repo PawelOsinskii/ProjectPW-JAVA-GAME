@@ -114,7 +114,7 @@ public class Shop implements Screen {
 
 		title.setFontScale(1.5f);
 		title.setPosition(Gdx.graphics.getWidth() / 3 + 130, Gdx.graphics.getHeight() - 80);
-		table.padTop(100);
+		table.padTop(200);
 		table.add(hpLabel).pad(50);
 		table.add(hpButton).pad(50);
 		table.row();

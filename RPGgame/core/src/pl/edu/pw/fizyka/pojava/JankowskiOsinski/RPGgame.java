@@ -29,7 +29,7 @@ public class RPGgame extends Game {
 		shop = new Shop(mapScreen);
 		this.setScreen(mapScreen);
 		InputMultiplexer im = new InputMultiplexer(new ScreenSwitcher(this, mapScreen, statsScreen, shop),
-				mapScreen.mapPlayerStats.stage);
+				mapScreen.mapPlayerStats.stage, shop.stage);
 		Gdx.input.setInputProcessor(im);
 	}
 }

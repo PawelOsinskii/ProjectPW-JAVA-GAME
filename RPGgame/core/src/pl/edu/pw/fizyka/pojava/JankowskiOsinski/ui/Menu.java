@@ -30,7 +30,7 @@ public class Menu implements Screen {
 	private TextButton quitButton;
 	private TextArea textArea;
 
-	// do background image
+	// to background image
 	private SpriteBatch batch;
 	private Sprite sprite;
 
@@ -46,11 +46,11 @@ public class Menu implements Screen {
 	@Override
 	public void show() {
 		assetManager = new AssetManager();
-		assetManager.load("uiskin.json", Skin.class);
+		assetManager.load(Constants.SKIN_NAME, Skin.class);
 		assetManager.finishLoading();
-		startButton = new TextButton("New game", assetManager.get("uiskin.json", Skin.class));
-		loadButton = new TextButton("Load game", assetManager.get("uiskin.json", Skin.class));
-		quitButton = new TextButton("Exit", assetManager.get("uiskin.json", Skin.class));
+		startButton = new TextButton("New game", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		loadButton = new TextButton("Load game", assetManager.get(Constants.SKIN_NAME, Skin.class));
+		quitButton = new TextButton("Exit", assetManager.get(Constants.SKIN_NAME, Skin.class));
 		startButton.setColor(Color.YELLOW);
 		loadButton.setColor(Color.RED);
 		quitButton.setColor(Color.BLUE);

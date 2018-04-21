@@ -45,7 +45,7 @@ public class MapScreen implements Screen {
 	boolean isZooming = false;
 
 	public MapScreen() {
-		mapPlayerStats = new MapPlayerStats();
+		mapPlayerStats = new MapPlayerStats(this);
 	}
 
 	@Override
@@ -121,7 +121,7 @@ public class MapScreen implements Screen {
 					music.stopPlay();
 					// save stats before changing the map !
 					int[] stats = { knight.getHp(), knight.getMana(), knight.getGold(), knight.getAttackLevel(),
-							knight.getMagicLevel(), knight.getShielding() };
+							knight.getMagicLevel(), knight.getExperience() };
 					knight.getWalkMusic().stopPlay();
 					init(Constants.endPositionX, Constants.endPositionY, Constants.nextMapName,
 							Constants.DESSERT_MUSIC);

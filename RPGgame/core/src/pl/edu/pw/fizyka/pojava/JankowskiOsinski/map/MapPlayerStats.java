@@ -11,7 +11,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui.LogIn;
 
 public class MapPlayerStats {
 
@@ -20,32 +22,42 @@ public class MapPlayerStats {
 	AssetManager assetManager;
 	String statsHP;
 	String statsGOLD;
+	String statsEXP;
 	TextButton returnButton;
 
-	public MapPlayerStats() {
+	public MapPlayerStats(final MapScreen mapScreen) {
 		stage = new Stage();
 		assetManager = new AssetManager();
-		assetManager.load("uiskin.json", Skin.class);
+		assetManager.load(Constants.SKIN_NAME, Skin.class);
 		assetManager.finishLoading();
-		statsLabel = new Label("", assetManager.get("uiskin.json", Skin.class));
+		statsLabel = new Label("", assetManager.get(Constants.SKIN_NAME, Skin.class));
 		statsLabel.setPosition(20, Gdx.graphics.getHeight() - 50);
-		returnButton = new TextButton("Exit", assetManager.get("uiskin.json", Skin.class));
+		returnButton = new TextButton("Exit", assetManager.get(Constants.SKIN_NAME, Skin.class));
 		returnButton.setPosition(1100, Gdx.graphics.getHeight() - 50);
 		returnButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				Dialog dialog = new Dialog("Warning", assetManager.get("uiskin.json", Skin.class)) {
+				Dialog dialog = new Dialog("Warning", assetManager.get(Constants.SKIN_NAME, Skin.class)) {
 					@Override
 					protected void result(Object object) {
 						if (object.equals(true)) {
-							// zapis statystyk do bazy danych !
-							System.out.println("Exiting");
+							try {
+								LogIn.savePlayer(mapScreen.getKnight());
+								System.exit(0);
+							} catch (Exception e) {
+								e.printStackTrace();
+								System.out.println("because of new game");
+							}
+							System.out.println("save");
+						} else if (object.equals(false)) {
+							// not exiting
 						}
 					}
 				};
-				dialog.text("Do you want to exit ?").pad(50);
-				dialog.button("Yes", true).pad(30);
-				dialog.button("No", false).pad(30);
+				dialog.pad(50);
+				dialog.text("Do you want to quit the game ?").pad(60);
+				dialog.button("Yes", true).pad(40);
+				dialog.button("No", false).pad(40);
 				dialog.key(Keys.ENTER, true);
 				dialog.show(stage);
 			}
@@ -58,7 +70,8 @@ public class MapPlayerStats {
 	public void show(Knight knight) {
 		statsHP = "HP : " + knight.getHp();
 		statsGOLD = "    GOLD : " + knight.getGold();
-		statsLabel.setText(statsHP + statsGOLD);
+		statsEXP = "    EXP : " + knight.getExperience();
+		statsLabel.setText(statsHP + statsGOLD + statsEXP);
 	}
 
 	public void render() {

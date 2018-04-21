@@ -8,6 +8,8 @@ public final class Constants {
 
 	public static final String BACKGROUND_IMAGE = "background.jpg";
 
+	public static final String SKIN_NAME = "uiskin.json";
+
 	public static final float ZOOM = 0.45f;
 	public static final float ZOOM_RATE = 0.8f;
 
@@ -33,5 +35,4 @@ public final class Constants {
 	public static final int SHOP_SCREEN = 3;
 
 	public static final int HP_COST = 10;
-
 }
