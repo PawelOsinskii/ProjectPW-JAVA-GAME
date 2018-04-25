@@ -60,7 +60,7 @@
         <div class="row">
           <div class="col">
             <h2>About Us</h2>
-            <p>We study Phisics on  Warsaw Univeristy of Technology. Our passion is programming.</p>
+            <p>We study Physics on  Warsaw Univeristy of Technology. Our passion is programming.</p>
           </div>
           
           <div class="col">

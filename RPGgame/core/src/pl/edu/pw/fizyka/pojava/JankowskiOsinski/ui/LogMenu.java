@@ -98,7 +98,7 @@ public class LogMenu implements Screen {
 				// link do strony gdzie mozna sie zalogowac
 				Desktop desktop = Desktop.isDesktopSupported() ? Desktop.getDesktop() : null;
 				try {
-					desktop.browse(new URI("https://github.com/javaProjekty"));
+					desktop.browse(new URI("http://www.paawel97.webd.pro"));
 				} catch (Exception ex) {
 					JOptionPane.showMessageDialog(null, "Source is not available");
 				}
