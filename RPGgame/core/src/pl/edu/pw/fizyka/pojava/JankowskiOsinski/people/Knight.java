@@ -128,10 +128,8 @@ public class Knight extends Person {
 		super.dispose();
 	}
 
-	public boolean isCollideWithBots(Bot bots) {
-		for (MapObject obj : bots.monsterList) {
-			// dokoncz potem !
-		}
+	public boolean isCollideWithBots(Bot bot) {
+		// do dokonczenia !
 		return false;
 	}
 

@@ -7,5 +7,5 @@ public interface Stats {
 	int MAGIC_LEVEL_START = 1;
 	int ATTACK_LEVEL_START = 1;
 	int GOLD_START = 50;
-	static final int WALK_SPEED = 2;
+	int WALK_SPEED = 2;
 }

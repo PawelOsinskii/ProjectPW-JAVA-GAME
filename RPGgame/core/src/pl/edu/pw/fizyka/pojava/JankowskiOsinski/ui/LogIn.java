@@ -5,8 +5,6 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Stats;

@@ -1,9 +1,7 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -62,14 +60,16 @@ public class ScreenSwitcher extends InputAdapter {
 			// zle dziala, bo klikając na siebie dodaje punkty do poprawy ! 
 			Vector3 worldCoords = new Vector3(screenX, screenY, 0);
 			mapScreen.camera.unproject(worldCoords);
-			mapScreen.bots.position(0).x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE - mapScreen.bots.position(0).x;
-			for (int i = 0; i < mapScreen.bots.getMonsterList().size(); i++) {
-				if (Math.abs(worldCoords.x - mapScreen.bots.position(i).x) < MapScreen.TILE_SIZE) {
-					// zwiększenie attack lvl za kazdym nasicnieciem na dragona
-					mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() + 1);
-				}
-			}
-			System.out.println(mapScreen.getKnight().getAttackLevel());
+			//mapScreen.bots.position(0).x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE - mapScreen.bots.position(0).x;
+			// for (int i = 0; i < mapScreen.bots.getMonsterList().size(); i++) {
+			// if (Math.abs(worldCoords.x - mapScreen.bots.position(i).x) <
+			// MapScreen.TILE_SIZE) {
+			// // zwiększenie attack lvl za kazdym nasicnieciem na dragona
+			// mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() +
+			// 1);
+			// }
+			// }
+			mapScreen.bots.get(0).position();
 		}
 		return false;
 	}

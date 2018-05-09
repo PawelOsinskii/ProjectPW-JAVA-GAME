@@ -1,8 +1,10 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -10,14 +12,12 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.TimeUtils;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Enemy;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 
@@ -39,8 +39,9 @@ public class MapScreen implements Screen {
 	private int[] layerTop = { 3 };
 
 	private Knight knight;
-	public Bot bots;
-
+	public List<Bot> bots;
+	private Enemy enemy = new Enemy();
+	
 	boolean isFirstInit = true;
 	boolean isZooming = false;
 
@@ -78,9 +79,11 @@ public class MapScreen implements Screen {
 		knight = new Knight(camera, new Vector2(posX, posY));
 		// tak zrobilem, bo nie ma botow na nowej mapie !
 		try {
-			bots = new Bot(tiledMapRenderer);
+			bots = new ArrayList<>();
+			bots.add(new Bot(tiledMapRenderer, "goblin"));
 		} catch (Exception ex) {
 		}
+		
 		// żeby znaleźć rozmiar mapy
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapRenderer.getMap().getLayers().get(0);
 		MAP_WIDTH = layer.getTileWidth() * layer.getWidth();
@@ -101,10 +104,14 @@ public class MapScreen implements Screen {
 		tiledMapRenderer.setView(camera);
 		if (isFirstMap) {
 			tiledMapRenderer.render(layerBottom);
-			bots.update(delta);
+			// bots.forEach(e -> e.update(delta));
+			for (Bot b : bots) {
+				b.update(delta);
+			}
 			knight.update(delta, this);
 			tiledMapRenderer.render(layerTop);
 		}
+		enemy.update(delta);
 		// tu teleport do innej mapy !
 		if (!isFirstMap) {
 			// jeszcze jakies boty
