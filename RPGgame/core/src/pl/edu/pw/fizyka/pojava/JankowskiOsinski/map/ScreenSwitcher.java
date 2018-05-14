@@ -26,6 +26,7 @@ public class ScreenSwitcher extends InputAdapter {
 	}
 
 	// Use 'I' to change screens
+	// Use 'Space' to go to the shop
 	@Override
 	public boolean keyUp(int keycode) {
 		if (keycode == Keys.I) {
@@ -55,21 +56,13 @@ public class ScreenSwitcher extends InputAdapter {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// do poprawy, bo na pustyni nie ma botów, dlatego wywala błedy
 		if (currentScreen == Constants.MAP_SCREEN) {
-			// zle dziala, bo klikając na siebie dodaje punkty do poprawy ! 
-			Vector3 worldCoords = new Vector3(screenX, screenY, 0);
-			mapScreen.camera.unproject(worldCoords);
-			//mapScreen.bots.position(0).x = MapScreen.MAP_WIDTH - MapScreen.TILE_SIZE - mapScreen.bots.position(0).x;
-			// for (int i = 0; i < mapScreen.bots.getMonsterList().size(); i++) {
-			// if (Math.abs(worldCoords.x - mapScreen.bots.position(i).x) <
-			// MapScreen.TILE_SIZE) {
-			// // zwiększenie attack lvl za kazdym nasicnieciem na dragona
-			// mapScreen.getKnight().setAttackLevel(mapScreen.getKnight().getAttackLevel() +
-			// 1);
-			// }
-			// }
-			mapScreen.bots.get(0).position();
+			float x1 = mapScreen.tiledMapRenderer.textureMonsters.get(0).getX();
+			float y1 = mapScreen.tiledMapRenderer.textureMonsters.get(0).getY();
+			float x2 = mapScreen.tiledMapRenderer.textureMonsters.get(1).getX();
+			float y2 = mapScreen.tiledMapRenderer.textureMonsters.get(1).getY();
+			// here I have to make unproject camera, to get map coords
+			System.out.println(x1 + " " + y1 + "," + x2 + " " + y2 + " :mouse" + screenX + " " + screenY);
 		}
 		return false;
 	}

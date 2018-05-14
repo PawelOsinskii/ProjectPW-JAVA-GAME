@@ -35,7 +35,7 @@ public class LogIn {
 			ResultSet rs = prep.getResultSet();
 			isLog = rs.next();
 
-			// odczytac statystyki gracza
+			// players stats
 			id = rs.getInt("id");
 			gold = rs.getInt("gold");
 			attack = rs.getInt("skill");
@@ -68,7 +68,6 @@ public class LogIn {
 			prep.setLong(4, person.getExperience());
 			prep.setLong(5, LogIn.id);
 			prep.executeLargeUpdate();
-			System.out.println("elo elo 3 2 0");
 			prep.close();
 			conn.close();
 		} catch (SQLException e) {
@@ -77,7 +76,7 @@ public class LogIn {
 	}
 
 	public static void loadStatsFromServer(MapScreen mapScreen) {
-		// pobieranie z bazy danych statystyk gracza
+		// loading players stats from database
 		mapScreen.getKnight().setAttackLevel(LogIn.attack);
 		mapScreen.getKnight().setGold(LogIn.gold);
 		mapScreen.getKnight().setMagicLevel(LogIn.magic);

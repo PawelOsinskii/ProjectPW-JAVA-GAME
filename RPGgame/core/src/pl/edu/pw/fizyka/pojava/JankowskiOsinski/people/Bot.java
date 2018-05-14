@@ -25,14 +25,13 @@ public class Bot {
 	}
 
 	public void update(float delta) {
-		tiledMapRenderer.renderObject(monster);
-
+		tiledMapRenderer.renderMonster(monster);
 	}
 
-	// getting position of the monster
+	// getting position of the monster ???
 	public Vector2 position() {
-		float x = (float) monster.getProperties().get("xPos");
-		float y = (float) monster.getProperties().get("yPos");
+		float x = (float) monster.getProperties().get("x");
+		float y = (float) monster.getProperties().get("y");
 		System.out.println(x + " , " + y);
 		return new Vector2();
 	}

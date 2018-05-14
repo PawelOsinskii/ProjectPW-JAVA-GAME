@@ -17,7 +17,6 @@ import com.badlogic.gdx.utils.TimeUtils;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
-import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Enemy;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 
@@ -40,8 +39,7 @@ public class MapScreen implements Screen {
 
 	private Knight knight;
 	public List<Bot> bots;
-	private Enemy enemy = new Enemy();
-	
+
 	boolean isFirstInit = true;
 	boolean isZooming = false;
 
@@ -51,7 +49,7 @@ public class MapScreen implements Screen {
 
 	@Override
 	public void show() {
-		// aby nie resetowały się statystyki bohatera
+		// not to restart knight stats
 		if (isFirstInit) {
 			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName, Constants.FORREST_MUSIC);
 			initPlayer(Constants.startPositionX, Constants.startPositionY);
@@ -77,14 +75,16 @@ public class MapScreen implements Screen {
 		tiledMap = new TmxMapLoader().load(map);
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 		knight = new Knight(camera, new Vector2(posX, posY));
-		// tak zrobilem, bo nie ma botow na nowej mapie !
+		// because, there aren't any bots in next map
 		try {
 			bots = new ArrayList<>();
 			bots.add(new Bot(tiledMapRenderer, "goblin"));
+			bots.add(new Bot(tiledMapRenderer, "dragon"));
+			bots.add(new Bot(tiledMapRenderer, "demon"));
 		} catch (Exception ex) {
 		}
-		
-		// żeby znaleźć rozmiar mapy
+
+		// to get map size
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapRenderer.getMap().getLayers().get(0);
 		MAP_WIDTH = layer.getTileWidth() * layer.getWidth();
 		MAP_HEIGHT = layer.getTileHeight() * layer.getHeight();
@@ -104,15 +104,12 @@ public class MapScreen implements Screen {
 		tiledMapRenderer.setView(camera);
 		if (isFirstMap) {
 			tiledMapRenderer.render(layerBottom);
-			// bots.forEach(e -> e.update(delta));
-			for (Bot b : bots) {
-				b.update(delta);
-			}
+			bots.forEach(e -> e.update(delta));
 			knight.update(delta, this);
 			tiledMapRenderer.render(layerTop);
 		}
-		enemy.update(delta);
-		// tu teleport do innej mapy !
+
+		// teleport
 		if (!isFirstMap) {
 			// jeszcze jakies boty
 			tiledMapRenderer.render(layerBottom);
@@ -157,7 +154,7 @@ public class MapScreen implements Screen {
 			return true;
 		}
 
-		// pozycja posągu (650,1140) + 32
+		// position of monument (650,1140) + 32
 		if (((Math.pow(person.getPosition().x - 650, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60
 				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1172, 2))) < 60
 				|| ((Math.pow(person.getPosition().x - 620, 2)) + (Math.pow(person.getPosition().y - 1140, 2))) < 60
