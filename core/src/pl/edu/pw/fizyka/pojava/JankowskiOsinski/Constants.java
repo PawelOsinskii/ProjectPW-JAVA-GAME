@@ -42,6 +42,6 @@ public final class Constants {
 	public static final int HP_COST = 10;
 	public static final int SKILL_COST = 50;
 
-	public static final int KNIGHT_RANGE = 6;
-	public static final int WIZARD_RANGE = 7;
+	public static final int KNIGHT_RANGE = 100;
+	public static final int WIZARD_RANGE = 300;
 }

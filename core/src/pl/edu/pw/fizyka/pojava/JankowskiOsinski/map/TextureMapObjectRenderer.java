@@ -1,8 +1,7 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.MapObject;
@@ -11,13 +10,15 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.utils.UniqueList;
+
 /**
  * @author robjan Class to render map and objects from Tiled
  */
 public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 
-	// list of objects to get X,Y position
-	List<TextureMapObject> textureMonsters = new ArrayList<>();
+	// not duplicated list of objects to get X,Y position
+	UniqueList<TextureMapObject> uniqueMonster = new UniqueList<>();
 
 	public TextureMapObjectRenderer(TiledMap map) {
 		super(map);
@@ -49,13 +50,14 @@ public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 	public void renderMonster(MapObject object) {
 		if (object instanceof TextureMapObject) {
 			TextureMapObject textureMonster = (TextureMapObject) object;
-			textureMonsters.add(textureMonster);
+			uniqueMonster.add(textureMonster);
 			batch.begin();
 			batch.draw(textureMonster.getTextureRegion(), textureMonster.getX(), textureMonster.getY());
 			batch.end();
 			// move the monster
-			textureMonster.setX(randomMove(-1, 1).x + textureMonster.getX());
-			textureMonster.setY(randomMove(-1, 1).y + textureMonster.getY());
+			textureMonster.setX(randomMove(-3, 3).x + textureMonster.getX());
+			textureMonster.setY(randomMove(-3, 3).y + textureMonster.getY());
+			// System.out.println(uniqueMonster.size());
 		}
 	}
 
@@ -66,11 +68,12 @@ public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 		return new Vector2(randX, randY);
 	}
 
-	public List<TextureMapObject> getTextureMonster() {
-		return textureMonsters;
+	public void setRandomPositionMonsters(UniqueList<TextureMapObject> uniqueMonster) {
+		// System.out.println("Size " + uniqueMonster.size());
+		uniqueMonster.stream().forEach(e -> {
+			e.setX(ThreadLocalRandom.current().nextInt(300, 1700));
+			e.setY(ThreadLocalRandom.current().nextInt(300, 1700));
+		});
 	}
 
-	public void setTextureMonster(List<TextureMapObject> textureMonster) {
-		this.textureMonsters = textureMonster;
-	}
 }

@@ -30,7 +30,7 @@ public class Bot {
 		tiledMapRenderer.renderMonster(monster);
 	}
 
-	// getting position of the monster ???
+	// getting position of the monster ??? wrong way
 	public Vector2 position() {
 		float x = (float) monster.getProperties().get("x");
 		float y = (float) monster.getProperties().get("y");

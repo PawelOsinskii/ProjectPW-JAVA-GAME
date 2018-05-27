@@ -1,5 +1,6 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -13,6 +14,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Wizard;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.utils.UniqueList;
 
 public class ScreenSwitcher extends InputAdapter {
 
@@ -23,7 +26,7 @@ public class ScreenSwitcher extends InputAdapter {
 	int currentScreen = Constants.MAP_SCREEN;
 	Vector2 posCamera;
 	Vector2 posPlayer;
-	Vector2[] monstersPos = new Vector2[3];
+	List<Vector2> posOfMonsters = new ArrayList<>();
 
 	public ScreenSwitcher(Game game, MapScreen screenMap, StatsScreen statsScreen, Shop shop) {
 		this.game = game;
@@ -66,12 +69,14 @@ public class ScreenSwitcher extends InputAdapter {
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
+
 			if (currentScreen == Constants.MAP_SCREEN) {
-				// 3 - no of monsters
-				for (int i = 0; i < 3; i++) {
-					monstersPos[i] = new Vector2(mapScreen.tiledMapRenderer.textureMonsters.get(i).getX(),
-							mapScreen.tiledMapRenderer.textureMonsters.get(i).getY());
+				for (int i = 0; i < mapScreen.mapBots.size(); i++) {
+					posOfMonsters.add(new Vector2(mapScreen.tiledMapRenderer.uniqueMonster.get(i).getX(),
+							mapScreen.tiledMapRenderer.uniqueMonster.get(i).getY()));
 				}
+
+				// mapScreen.mapBots.forEach((k, v) -> System.out.println(k));
 
 				// get player coords
 				int playerX = (int) mapScreen.player.getPosition().x;
@@ -83,58 +88,78 @@ public class ScreenSwitcher extends InputAdapter {
 				screenX = (int) coords.x;
 				screenY = (int) coords.y;
 
-				Object[] results = isMonsterClicked(screenX, screenY, monstersPos, playerX, playerY,
-						Constants.KNIGHT_RANGE, mapScreen.tiledMapRenderer.textureMonsters);
+				// change range based on the class
+				Object[] results = isMonsterClicked(screenX, screenY, posOfMonsters, playerX, playerY,
+						(mapScreen.player instanceof Wizard) ? Constants.WIZARD_RANGE : Constants.KNIGHT_RANGE,
+						mapScreen.tiledMapRenderer.uniqueMonster);
+
+				posOfMonsters.clear();
 
 				if ((boolean) results[0]) {
 
-					int damage = mapScreen.player.attack(mapScreen.mapBots.get((String) results[1]));
 					int hpBot = mapScreen.mapBots.get((String) results[1]).getHp();
 
-					mapScreen.mapBots.get((String) results[1]).setHp(hpBot - damage);
-
-					// add hud to bot
-
-					// DamageScreen damageScreen = new DamageScreen(new Vector2(screenX, screenY),
-					// damage);
-					// damageScreen.render();
-
-					// remove bot
 					if (hpBot <= 0) {
 						mapScreen.player
 								.setGold(mapScreen.player.getGold() + ThreadLocalRandom.current().nextInt(0, 30));
 						mapScreen.player.setExperience(mapScreen.player.getExperience()
 								+ mapScreen.mapBots.get((String) results[1]).getShielding());
 						mapScreen.mapBots.remove((String) results[1]);
+						mapScreen.tiledMapRenderer.uniqueMonster.remove((int) results[2]);
 						mapScreen.mapPlayerStats.show(mapScreen.player);
+					} else {
+
+						int damage = mapScreen.player.attack(mapScreen.mapBots.get((String) results[1]));
+
+						mapScreen.mapBots.get((String) results[1]).setHp(hpBot - damage);
+
+						// add hud to bot
+
+						// DamageScreen damageScreen = new DamageScreen(new Vector2(screenX, screenY),
+						// damage);
+						// damageScreen.render();
+
+						// System.out.println(damage);
+						// System.out.println((String) results[1]);
 					}
-
-					if (mapScreen.mapBots.size() == 0) {
-						new Timer().schedule(new TimerTask() {
-							@Override
-							public void run() {
-								mapScreen.mapBots = mapScreen.renderMonster(mapScreen.tiledMapRenderer,
-										Constants.BOTS_NAMES);
-							}
-						}, 5000);
-
+					if (mapScreen.mapBots.size() <= 0) {
+						restartMonsters(mapScreen);
 					}
-					System.out.println(mapScreen.mapBots.get((String) results[1]).getHp());
-					System.out.println(damage);
-					System.out.println((String) results[1]);
-
 				}
-
 				System.out
 						.println("Screen coord translated to world coordinates: " + "X: " + screenX + " Y: " + screenY);
+				// System.err.println("Size unique : " + mapScreen.tiledMapRenderer.uniqueMonster.size());
 			}
 		} catch (Exception e) {
 			System.out.println("There are't any bots on this map");
+			// remember that there is null pointer exception but it works
+			// e.printStackTrace();
 		}
 		return false;
 	}
 
 	/**
+	 * I do that because I need an interval to load textures
+	 * 
+	 * @param mapScreen
+	 */
+	private void restartMonsters(MapScreen mapScreen) {
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				mapScreen.mapBots = mapScreen.renderMonster(mapScreen.tiledMapRenderer, Constants.BOTS_NAMES);
+			}
+		}, 5000);
+		new Timer().schedule(new TimerTask() {
+			@Override
+			public void run() {
+				mapScreen.tiledMapRenderer.setRandomPositionMonsters(mapScreen.tiledMapRenderer.uniqueMonster);
+			}
+		}, 5100);
+	}
+
+	/**
+	 * 
 	 * @param clickX
 	 * @param clickY
 	 * @param monstersPos
@@ -144,20 +169,21 @@ public class ScreenSwitcher extends InputAdapter {
 	 * @param monster
 	 * @return { (boolean) if player cliked monster, name of monster }
 	 */
-	private Object[] isMonsterClicked(int clickX, int clickY, Vector2[] monstersPos, int playerX, int playerY,
-			int radius, List<TextureMapObject> monster) {
-		for (int i = 0; i < monstersPos.length; i++) {
-			if (isEntityClicked(clickX, clickY, (int) monstersPos[i].x, (int) monstersPos[i].y)) {
-				int range = (int) Math
-						.sqrt(((int) monstersPos[i].x - playerX) ^ 2 + ((int) monstersPos[i].y - playerY) ^ 2);
+	private Object[] isMonsterClicked(int clickX, int clickY, List<Vector2> monstersPos, int playerX, int playerY,
+			int radius, UniqueList<TextureMapObject> monster) {
+		for (int i = 0; i < monstersPos.size(); i++) {
+			if (isEntityClicked(clickX, clickY, (int) monstersPos.get(i).x, (int) monstersPos.get(i).y)) {
+				int range = (int) Math.sqrt(
+						Math.pow((monstersPos.get(i).x - playerX), 2) + Math.pow((monstersPos.get(i).y - playerY), 2));
 				if (range <= radius) {
 					// here I get name of the clicked monster
 					// System.out.println(monster.get(i).getName());
-					return new Object[] { true, monster.get(i).getName() };
+					System.out.println(i);
+					return new Object[] { true, monster.get(i).getName(), i };
 				}
 			}
 		}
-		return new Object[] { false, "" };
+		return new Object[] { false, "", -999 };
 	}
 
 	/**

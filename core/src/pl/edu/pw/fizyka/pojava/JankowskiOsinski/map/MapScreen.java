@@ -8,7 +8,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -54,14 +53,12 @@ public class MapScreen implements Screen {
 
 	@Override
 	public void show() {
-		// not to restart knight stats
+		// not to restart player stats
 		if (isFirstInit) {
 			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName, Constants.FORREST_MUSIC);
 			initPlayer(Constants.startPositionX, Constants.startPositionY);
 			isFirstInit = false;
 		}
-		// knight.isCollideWithSecondLayer(tiledMapRenderer);
-
 		mapPlayerStats.show(player);
 	}
 
@@ -82,7 +79,6 @@ public class MapScreen implements Screen {
 		tiledMapRenderer = new TextureMapObjectRenderer(tiledMap);
 
 		// here I have to get from database which type to render
-		// for example: if(type==WIZARD) new Wizard
 		switch (LogIn.role) {
 		case "knight":
 			player = new Knight(camera, new Vector2(posX, posY), Constants.KNIGHT_IMG);
@@ -98,7 +94,7 @@ public class MapScreen implements Screen {
 		System.out.println(player.getClass().getName());
 		// because, there aren't any bots in next map
 		try {
-			// for the map
+			// render monsters
 			mapBots = renderMonster(tiledMapRenderer, Constants.BOTS_NAMES);
 		} catch (Exception ex) {
 		}
@@ -123,7 +119,7 @@ public class MapScreen implements Screen {
 		tiledMapRenderer.setView(camera);
 		if (isFirstMap) {
 			tiledMapRenderer.render(layerBottom);
-			mapBots.forEach((k, v) -> v.update(delta));
+			mapBots.forEach((k, v) -> v.update(Gdx.graphics.getDeltaTime()));
 			player.update(delta, this);
 			tiledMapRenderer.render(layerTop);
 		}
@@ -176,6 +172,7 @@ public class MapScreen implements Screen {
 		Map<String, Bot> mapBots = new HashMap<>();
 		for (int i = 0; i < names.length; i++) {
 			mapBots.put(names[i], new Bot(tiledMapRenderer, names[i]));
+			System.out.println(names[i]);
 		}
 		return mapBots;
 	}
