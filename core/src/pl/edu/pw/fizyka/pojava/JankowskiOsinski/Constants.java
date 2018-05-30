@@ -13,7 +13,7 @@ public final class Constants {
 	public static final String KNIGHT_IMG = "person2.png";
 	public static final String WIZARD_IMG = "person3.png";
 
-	public static final String[] BOTS_NAMES = { "goblin", "goblin1", "dragon", "dragon1", "demon" };
+	public static final String[] BOTS_NAMES = { "goblin", "goblin1", "dragon", "dragon1", "demon", "dragon2" };
 
 	public static final float ZOOM = 0.45f;
 	public static final float ZOOM_RATE = 0.8f;
@@ -44,4 +44,7 @@ public final class Constants {
 
 	public static final int KNIGHT_RANGE = 100;
 	public static final int WIZARD_RANGE = 300;
+	public static final int MONSTER_RANGE = 200;
+
+	public static boolean isClickedMonster = false;
 }

@@ -18,7 +18,8 @@ import pl.edu.pw.fizyka.pojava.JankowskiOsinski.utils.UniqueList;
 public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 
 	// not duplicated list of objects to get X,Y position
-	UniqueList<TextureMapObject> uniqueMonster = new UniqueList<>();
+	private UniqueList<TextureMapObject> uniqueMonster = new UniqueList<>();
+	int counter = 0;
 
 	public TextureMapObjectRenderer(TiledMap map) {
 		super(map);
@@ -50,15 +51,19 @@ public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 	public void renderMonster(MapObject object) {
 		if (object instanceof TextureMapObject) {
 			TextureMapObject textureMonster = (TextureMapObject) object;
-			uniqueMonster.add(textureMonster);
+			getUniqueMonster().add(textureMonster);
 			batch.begin();
 			batch.draw(textureMonster.getTextureRegion(), textureMonster.getX(), textureMonster.getY());
 			batch.end();
 			// move the monster
-			textureMonster.setX(randomMove(-3, 3).x + textureMonster.getX());
-			textureMonster.setY(randomMove(-3, 3).y + textureMonster.getY());
+			
+			
+			//textureMonster.setX(randomMove(-3, 3).x + textureMonster.getX());
+			//textureMonster.setY(randomMove(-3, 3).y + textureMonster.getY());
+			
 			// System.out.println(uniqueMonster.size());
 		}
+
 	}
 
 	public Vector2 randomMove(float min, float max) {
@@ -74,6 +79,14 @@ public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 			e.setX(ThreadLocalRandom.current().nextInt(300, 1700));
 			e.setY(ThreadLocalRandom.current().nextInt(300, 1700));
 		});
+	}
+
+	public UniqueList<TextureMapObject> getUniqueMonster() {
+		return uniqueMonster;
+	}
+
+	public void setUniqueMonster(UniqueList<TextureMapObject> uniqueMonster) {
+		this.uniqueMonster = uniqueMonster;
 	}
 
 }

@@ -1,7 +1,11 @@
 package pl.edu.pw.fizyka.pojava.JankowskiOsinski.map;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -16,6 +20,7 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.RPGgame;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
@@ -31,11 +36,14 @@ public class MapScreen implements Screen {
 	public static float MAP_WIDTH;
 	public static float TILE_SIZE;
 
+	RPGgame game;
 	TiledMap tiledMap;
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
 	MyMusic music;
 	public MapPlayerStats mapPlayerStats;
+	DamageScreen damageScreen;
+	ExecutorService executorService = Executors.newCachedThreadPool();
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 3 };
@@ -43,12 +51,20 @@ public class MapScreen implements Screen {
 	// I want to choose which character render
 	public PersonTemplate player;
 	public Map<String, Bot> mapBots;
+	// only to get attack point
+	private Bot bot;
+	private List<Vector2> posOfMonsters = new ArrayList<>();
 
 	boolean isFirstInit = true;
 	boolean isZooming = false;
 
-	public MapScreen() {
+	private int counter = 0;
+
+	public MapScreen(RPGgame game) {
+		this.game = game;
 		mapPlayerStats = new MapPlayerStats(this);
+		damageScreen = new DamageScreen();
+
 	}
 
 	@Override
@@ -96,6 +112,7 @@ public class MapScreen implements Screen {
 		try {
 			// render monsters
 			mapBots = renderMonster(tiledMapRenderer, Constants.BOTS_NAMES);
+			bot = new Bot(tiledMapRenderer, Constants.BOTS_NAMES[0]);
 		} catch (Exception ex) {
 		}
 
@@ -108,6 +125,7 @@ public class MapScreen implements Screen {
 		camera.zoom = Constants.ZOOM;
 		camera.position.set(posX, posY, 0);
 		camera.update();
+
 	}
 
 	@Override
@@ -151,6 +169,28 @@ public class MapScreen implements Screen {
 			}
 		}
 		mapPlayerStats.render();
+		damageScreen.render();
+
+		// attack player !
+		addMonstersToList(tiledMapRenderer, posOfMonsters);
+		if (isPlayerNearMonster(posOfMonsters, (int) player.getPosition().x, (int) player.getPosition().y,
+				Constants.MONSTER_RANGE)) {
+			++counter;
+			// decrease value to increase speed
+			if (counter == 10) {
+				// zrob zeby odejmowaly sie hp co 2 sec !
+				attackPlayer(player, bot);
+				counter = 0;
+			}
+		}
+		posOfMonsters.clear();
+
+		// restart player save old stats and decrease exp lvl !
+		if (player.getHp() <= 0) {
+			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName, Constants.FORREST_MUSIC);
+			initPlayer(Constants.startPositionX, Constants.startPositionY);
+		}
+
 	}
 
 	@Override
@@ -175,6 +215,37 @@ public class MapScreen implements Screen {
 			System.out.println(names[i]);
 		}
 		return mapBots;
+	}
+
+	private void addMonstersToList(TextureMapObjectRenderer mapObjectRenderer, List<Vector2> posOfMonsters) {
+		for (int i = 0; i < mapBots.size(); i++) {
+			posOfMonsters.add(new Vector2(mapObjectRenderer.getUniqueMonster().get(i).getX(),
+					mapObjectRenderer.getUniqueMonster().get(i).getY()));
+		}
+	}
+
+	private void attackPlayer(PersonTemplate player, Bot bot) {
+		// do poprawy
+		player.setHp(player.getHp() - bot.getAttack());
+		mapPlayerStats.show(player);
+	}
+
+	/**
+	 * 
+	 * @param monstersPos
+	 * @param playerX
+	 * @param playerY
+	 * @param radius
+	 * @return
+	 */
+	private boolean isPlayerNearMonster(List<Vector2> monstersPos, int playerX, int playerY, int radius) {
+		for (Vector2 monster : monstersPos) {
+			int range = (int) Math.sqrt(Math.pow((monster.x - playerX), 2) + Math.pow((monster.y - playerY), 2));
+			if (range <= radius) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	@Override

@@ -16,6 +16,7 @@ public class RPGgame extends Game {
 	StatsScreen statsScreen;
 	Shop shop;
 	Menu menu;
+	ScreenSwitcher screenSwitcher;
 
 	@Override
 	public void create() {
@@ -24,12 +25,17 @@ public class RPGgame extends Game {
 	}
 
 	public void loadGame() {
-		mapScreen = new MapScreen();
+		mapScreen = new MapScreen(this);
 		statsScreen = new StatsScreen(mapScreen);
 		shop = new Shop(mapScreen);
 		this.setScreen(mapScreen);
-		InputMultiplexer im = new InputMultiplexer(new ScreenSwitcher(this, mapScreen, statsScreen, shop),
-				mapScreen.mapPlayerStats.stage, shop.stage);
+		screenSwitcher = new ScreenSwitcher(this, mapScreen, statsScreen, shop);
+		InputMultiplexer im = new InputMultiplexer(screenSwitcher, mapScreen.mapPlayerStats.stage, shop.stage);
 		Gdx.input.setInputProcessor(im);
 	}
+
+	public ScreenSwitcher getScreenSwitcher() {
+		return screenSwitcher;
+	}
+
 }
