@@ -14,8 +14,9 @@ import com.badlogic.gdx.maps.objects.TextureMapObject;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.Shop;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.StatsScreen;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Wizard;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.utils.UniqueList;
 
@@ -64,6 +65,13 @@ public class ScreenSwitcher extends InputAdapter {
 				currentScreen = Constants.MAP_SCREEN;
 			}
 		}
+		// show range circle
+		if (keycode == Keys.R) {
+			if (!Constants.isCircle) {
+				Constants.isCircle = true;
+			}
+			System.out.println(Constants.isCircle);
+		}
 		return true;
 	}
 
@@ -72,7 +80,7 @@ public class ScreenSwitcher extends InputAdapter {
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 		try {
 			isClicked = true;
-			
+
 			if (currentScreen == Constants.MAP_SCREEN) {
 
 				addMonstersByPosition(mapScreen, posOfMonsters);
@@ -126,6 +134,7 @@ public class ScreenSwitcher extends InputAdapter {
 					}
 					if (mapScreen.mapBots.size() <= 0) {
 						restartMonsters(mapScreen);
+						mapScreen.mapBots.forEach((k, v) -> v.increaseStatsAfterDead(10, 2, 2));
 					}
 				}
 				System.out

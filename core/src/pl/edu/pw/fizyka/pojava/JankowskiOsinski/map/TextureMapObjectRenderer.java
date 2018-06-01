@@ -55,15 +55,8 @@ public class TextureMapObjectRenderer extends OrthogonalTiledMapRenderer {
 			batch.begin();
 			batch.draw(textureMonster.getTextureRegion(), textureMonster.getX(), textureMonster.getY());
 			batch.end();
-			// move the monster
-			
-			
-			//textureMonster.setX(randomMove(-3, 3).x + textureMonster.getX());
-			//textureMonster.setY(randomMove(-3, 3).y + textureMonster.getY());
-			
 			// System.out.println(uniqueMonster.size());
 		}
-
 	}
 
 	public Vector2 randomMove(float min, float max) {

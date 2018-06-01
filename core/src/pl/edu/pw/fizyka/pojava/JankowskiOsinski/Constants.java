@@ -3,8 +3,7 @@ package pl.edu.pw.fizyka.pojava.JankowskiOsinski;
 public final class Constants {
 
 	public static final String mapName = "map.tmx";
-	// test map !
-	public static final String nextMapName = "map4.tmx";
+	public static final String newMap = "new_map.tmx";
 
 	public static final String BACKGROUND_IMAGE = "background.jpg";
 
@@ -21,9 +20,8 @@ public final class Constants {
 	public static final int startPositionX = 352;
 	public static final int startPositionY = 1679;
 
-	// only for tests
-	public static final float endPositionX = 673;
-	public static final float endPositionY = 1139;
+	public static final float endPositionX = 1022;
+	public static final float endPositionY = 1131;
 
 	// music
 	public static final String FORREST_MUSIC = "music.mp3";
@@ -42,9 +40,10 @@ public final class Constants {
 	public static final int HP_COST = 10;
 	public static final int SKILL_COST = 50;
 
-	public static final int KNIGHT_RANGE = 100;
-	public static final int WIZARD_RANGE = 300;
-	public static final int MONSTER_RANGE = 200;
+	public static final int KNIGHT_RANGE = 110;
+	public static final int WIZARD_RANGE = 200;
+	public static final int MONSTER_RANGE = 110;
 
 	public static boolean isClickedMonster = false;
+	public static boolean isCircle = false;
 }

@@ -6,8 +6,8 @@ import com.badlogic.gdx.InputMultiplexer;
 
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.ScreenSwitcher;
-import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.Shop;
-import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.StatsScreen;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.Shop;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.StatsScreen;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui.Menu;
 
 public class RPGgame extends Game {

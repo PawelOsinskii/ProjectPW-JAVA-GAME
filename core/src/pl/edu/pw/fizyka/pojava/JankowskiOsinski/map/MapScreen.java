@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -21,17 +18,20 @@ import com.badlogic.gdx.utils.TimeUtils;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.MyMusic;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.RPGgame;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.circle.ShowRangeScreenStage;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.DamageScreen;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.screens.MapPlayerStats;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Bot;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Knight;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Person;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.PersonTemplate;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Stats;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.people.Wizard;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.ui.LogIn;
 
 public class MapScreen implements Screen {
-	public static final String TAG = MapScreen.class.getName();
-	private boolean isFirstMap = true;
 
+	public static final String TAG = MapScreen.class.getName();
 	public static float MAP_HEIGHT;
 	public static float MAP_WIDTH;
 	public static float TILE_SIZE;
@@ -43,7 +43,7 @@ public class MapScreen implements Screen {
 	MyMusic music;
 	public MapPlayerStats mapPlayerStats;
 	DamageScreen damageScreen;
-	ExecutorService executorService = Executors.newCachedThreadPool();
+	ShowRangeScreenStage rangeScreenStage;
 
 	private int[] layerBottom = { 0 };
 	private int[] layerTop = { 3 };
@@ -59,12 +59,13 @@ public class MapScreen implements Screen {
 	boolean isZooming = false;
 
 	private int counter = 0;
+	private int rangeCounter = 0;
 
 	public MapScreen(RPGgame game) {
 		this.game = game;
 		mapPlayerStats = new MapPlayerStats(this);
 		damageScreen = new DamageScreen();
-
+		rangeScreenStage = new ShowRangeScreenStage();
 	}
 
 	@Override
@@ -106,15 +107,9 @@ public class MapScreen implements Screen {
 			System.out.println("Error, couldn't find vacation");
 			break;
 		}
-
-		System.out.println(player.getClass().getName());
-		// because, there aren't any bots in next map
-		try {
-			// render monsters
-			mapBots = renderMonster(tiledMapRenderer, Constants.BOTS_NAMES);
-			bot = new Bot(tiledMapRenderer, Constants.BOTS_NAMES[0]);
-		} catch (Exception ex) {
-		}
+		// System.out.println(player.getClass().getSimpleName());
+		mapBots = renderMonster(tiledMapRenderer, Constants.BOTS_NAMES);
+		bot = new Bot(tiledMapRenderer, Constants.BOTS_NAMES[0]);
 
 		// to get map size
 		TiledMapTileLayer layer = (TiledMapTileLayer) tiledMapRenderer.getMap().getLayers().get(0);
@@ -135,41 +130,40 @@ public class MapScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		tiledMapRenderer.setView(camera);
-		if (isFirstMap) {
-			tiledMapRenderer.render(layerBottom);
-			mapBots.forEach((k, v) -> v.update(Gdx.graphics.getDeltaTime()));
-			player.update(delta, this);
-			tiledMapRenderer.render(layerTop);
-		}
+		tiledMapRenderer.render(layerBottom);
+		mapBots.forEach((k, v) -> v.update(Gdx.graphics.getDeltaTime()));
+		player.update(delta, this);
+		tiledMapRenderer.render(layerTop);
 
-		// teleport
-		if (!isFirstMap) {
-			// jeszcze jakies boty
-			tiledMapRenderer.render(layerBottom);
-			player.update(delta, this);
-		}
-		// Zoom out effect and reseting map
+		// Reseting map / new map
 		if (isNextMap(player)) {
 			long endTime = TimeUtils.nanoTime();
 			isZooming = false;
 			while (!isZooming) {
 				if (TimeUtils.timeSinceNanos(endTime) > 100000000) {
-					isFirstMap = false;
 					music.stopPlay();
 					// save stats before changing the map !
 					int[] stats = { player.getHp(), player.getMana(), player.getGold(), player.getAttackLevel(),
 							player.getMagicLevel(), player.getExperience() };
 					player.getWalkMusic().stopPlay();
-					init(Constants.endPositionX, Constants.endPositionY, Constants.nextMapName,
-							Constants.DESSERT_MUSIC);
+					init(Constants.endPositionX, Constants.endPositionY, Constants.newMap, Constants.DESSERT_MUSIC);
 					player.saveStats(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5]);
 					isZooming = true;
 					endTime = TimeUtils.nanoTime();
 				}
 			}
 		}
+		
 		mapPlayerStats.render();
 		damageScreen.render();
+		if (Constants.isCircle) {
+			++rangeCounter;
+			rangeScreenStage.render(this);
+			if (rangeCounter == 60) {
+				Constants.isCircle = false;
+				rangeCounter = 0;
+			}
+		}
 
 		// attack player !
 		addMonstersToList(tiledMapRenderer, posOfMonsters);
@@ -178,17 +172,26 @@ public class MapScreen implements Screen {
 			++counter;
 			// decrease value to increase speed
 			if (counter == 10) {
-				// zrob zeby odejmowaly sie hp co 2 sec !
 				attackPlayer(player, bot);
 				counter = 0;
 			}
 		}
 		posOfMonsters.clear();
 
-		// restart player save old stats and decrease exp lvl !
+		// restart player save old stats and decrease exp lvl
 		if (player.getHp() <= 0) {
+			// after player dead all monster are alive again
+			music.stopPlay();
+			player.getWalkMusic().stopPlay();
+			int expAfterDead = (int) Math.floor(player.getExperience() / 2);
+			System.out.println(expAfterDead);
+			int[] stats = { Stats.HP_START, player.getMana(), player.getGold(), player.getAttackLevel(),
+					player.getMagicLevel(), expAfterDead };
 			init(Constants.startPositionX, Constants.startPositionY, Constants.mapName, Constants.FORREST_MUSIC);
 			initPlayer(Constants.startPositionX, Constants.startPositionY);
+			player.saveStats(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5]);
+			mapPlayerStats.show(player);
+			// increase bots stats
 		}
 
 	}
@@ -218,14 +221,18 @@ public class MapScreen implements Screen {
 	}
 
 	private void addMonstersToList(TextureMapObjectRenderer mapObjectRenderer, List<Vector2> posOfMonsters) {
-		for (int i = 0; i < mapBots.size(); i++) {
-			posOfMonsters.add(new Vector2(mapObjectRenderer.getUniqueMonster().get(i).getX(),
-					mapObjectRenderer.getUniqueMonster().get(i).getY()));
+		// once I get this error, but I don't know what happened
+		try {
+			for (int i = 0; i < mapBots.size(); i++) {
+				posOfMonsters.add(new Vector2(mapObjectRenderer.getUniqueMonster().get(i).getX(),
+						mapObjectRenderer.getUniqueMonster().get(i).getY()));
+			}
+		} catch (IndexOutOfBoundsException e) {
+			// e.printStackTrace();
 		}
 	}
 
 	private void attackPlayer(PersonTemplate player, Bot bot) {
-		// do poprawy
 		player.setHp(player.getHp() - bot.getAttack());
 		mapPlayerStats.show(player);
 	}
@@ -279,4 +286,7 @@ public class MapScreen implements Screen {
 		return player;
 	}
 
+	public OrthographicCamera getCamera() {
+		return camera;
+	}
 }

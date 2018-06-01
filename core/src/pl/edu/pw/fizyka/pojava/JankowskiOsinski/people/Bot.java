@@ -43,6 +43,12 @@ public class Bot {
 		}
 	}
 
+	public void increaseStatsAfterDead(int hp, int attack, int shielding) {
+		this.hp += hp;
+		this.attack += attack;
+		this.shielding += shielding;
+	}
+
 	public int getHp() {
 		return hp;
 	}
