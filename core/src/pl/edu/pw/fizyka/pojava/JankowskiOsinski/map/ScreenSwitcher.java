@@ -70,7 +70,7 @@ public class ScreenSwitcher extends InputAdapter {
 			if (!Constants.isCircle) {
 				Constants.isCircle = true;
 			}
-			System.out.println(Constants.isCircle);
+			// System.out.println(Constants.isCircle);
 		}
 		return true;
 	}
@@ -104,6 +104,8 @@ public class ScreenSwitcher extends InputAdapter {
 						(mapScreen.player instanceof Wizard) ? Constants.WIZARD_RANGE : Constants.KNIGHT_RANGE,
 						mapScreen.tiledMapRenderer.getUniqueMonster());
 
+				Constants.monsterCurrentAttack = (int) results[2];
+
 				posOfMonsters.clear();
 
 				if ((boolean) results[0]) {
@@ -134,7 +136,7 @@ public class ScreenSwitcher extends InputAdapter {
 					}
 					if (mapScreen.mapBots.size() <= 0) {
 						restartMonsters(mapScreen);
-						mapScreen.mapBots.forEach((k, v) -> v.increaseStatsAfterDead(10, 2, 2));
+						mapScreen.mapBots.forEach((k, v) -> v.increaseStatsAfterDead(30, 5, 2));
 					}
 				}
 				System.out

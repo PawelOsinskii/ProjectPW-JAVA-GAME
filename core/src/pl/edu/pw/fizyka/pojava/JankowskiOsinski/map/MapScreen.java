@@ -41,6 +41,7 @@ public class MapScreen implements Screen {
 	OrthographicCamera camera;
 	TextureMapObjectRenderer tiledMapRenderer;
 	MyMusic music;
+	MyMusic attackMusic;
 	public MapPlayerStats mapPlayerStats;
 	DamageScreen damageScreen;
 	ShowRangeScreenStage rangeScreenStage;
@@ -60,6 +61,7 @@ public class MapScreen implements Screen {
 
 	private int counter = 0;
 	private int rangeCounter = 0;
+	private int musicCounter = 0;
 
 	public MapScreen(RPGgame game) {
 		this.game = game;
@@ -107,6 +109,12 @@ public class MapScreen implements Screen {
 			System.out.println("Error, couldn't find vacation");
 			break;
 		}
+
+		// attack music depends on role
+		attackMusic = new MyMusic(player.getClass().getSimpleName().equals("Wizard") ? Constants.WIZZARD_ATTACK_MUSIC
+				: Constants.KNIGHT_ATTACK_MUSIC);
+		attackMusic.setLevel(0.7f);
+
 		// System.out.println(player.getClass().getSimpleName());
 		mapBots = renderMonster(tiledMapRenderer, Constants.BOTS_NAMES);
 		bot = new Bot(tiledMapRenderer, Constants.BOTS_NAMES[0]);
@@ -131,7 +139,7 @@ public class MapScreen implements Screen {
 
 		tiledMapRenderer.setView(camera);
 		tiledMapRenderer.render(layerBottom);
-		mapBots.forEach((k, v) -> v.update(Gdx.graphics.getDeltaTime()));
+		mapBots.forEach((k, v) -> v.update(Gdx.graphics.getDeltaTime(), this));
 		player.update(delta, this);
 		tiledMapRenderer.render(layerTop);
 
@@ -146,6 +154,7 @@ public class MapScreen implements Screen {
 					int[] stats = { player.getHp(), player.getMana(), player.getGold(), player.getAttackLevel(),
 							player.getMagicLevel(), player.getExperience() };
 					player.getWalkMusic().stopPlay();
+					attackMusic.stopPlay();
 					init(Constants.endPositionX, Constants.endPositionY, Constants.newMap, Constants.DESSERT_MUSIC);
 					player.saveStats(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5]);
 					isZooming = true;
@@ -153,7 +162,7 @@ public class MapScreen implements Screen {
 				}
 			}
 		}
-		
+
 		mapPlayerStats.render();
 		damageScreen.render();
 		if (Constants.isCircle) {
@@ -183,6 +192,7 @@ public class MapScreen implements Screen {
 			// after player dead all monster are alive again
 			music.stopPlay();
 			player.getWalkMusic().stopPlay();
+			attackMusic.stopPlay();
 			int expAfterDead = (int) Math.floor(player.getExperience() / 2);
 			System.out.println(expAfterDead);
 			int[] stats = { Stats.HP_START, player.getMana(), player.getGold(), player.getAttackLevel(),
@@ -191,9 +201,18 @@ public class MapScreen implements Screen {
 			initPlayer(Constants.startPositionX, Constants.startPositionY);
 			player.saveStats(stats[0], stats[1], stats[2], stats[3], stats[4], stats[5]);
 			mapPlayerStats.show(player);
-			// increase bots stats
 		}
 
+		// loop attack music
+		if (Constants.isClickedMonster) {
+			++musicCounter;
+			attackMusic.startPlay();
+			if (musicCounter == 40) {
+				Constants.isClickedMonster = false;
+				attackMusic.stopPlay();
+				musicCounter = 0;
+			}
+		}
 	}
 
 	@Override
@@ -237,14 +256,6 @@ public class MapScreen implements Screen {
 		mapPlayerStats.show(player);
 	}
 
-	/**
-	 * 
-	 * @param monstersPos
-	 * @param playerX
-	 * @param playerY
-	 * @param radius
-	 * @return
-	 */
 	private boolean isPlayerNearMonster(List<Vector2> monstersPos, int playerX, int playerY, int radius) {
 		for (Vector2 monster : monstersPos) {
 			int range = (int) Math.sqrt(Math.pow((monster.x - playerX), 2) + Math.pow((monster.y - playerY), 2));
@@ -282,7 +293,7 @@ public class MapScreen implements Screen {
 		this.tiledMapRenderer = tiledMapRenderer;
 	}
 
-	public Person getPlayer() {
+	public PersonTemplate getPlayer() {
 		return player;
 	}
 

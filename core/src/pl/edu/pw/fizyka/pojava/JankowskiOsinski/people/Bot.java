@@ -5,6 +5,9 @@ import java.util.Random;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.MapObjects;
+
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.Constants;
+import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.MapScreen;
 import pl.edu.pw.fizyka.pojava.JankowskiOsinski.map.TextureMapObjectRenderer;
 
 public class Bot {
@@ -28,10 +31,12 @@ public class Bot {
 		}
 	}
 
-	public void update(float delta) {
+	public void update(float delta, MapScreen mapScreen) {
 		tiledMapRenderer.renderMonster(monster);
 		++counter;
 		if (counter == 3) {
+			tiledMapRenderer.followPlayer(tiledMapRenderer.getUniqueMonster(), Constants.monsterCurrentAttack,
+					mapScreen.getPlayer());
 			tiledMapRenderer.getUniqueMonster().stream().forEach(e -> {
 				Random random = new Random();
 				e.setX(tiledMapRenderer.randomMove(random.nextFloat() * 2 - 1, random.nextFloat() * 2 - 1).x

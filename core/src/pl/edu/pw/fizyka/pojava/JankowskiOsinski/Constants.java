@@ -28,6 +28,8 @@ public final class Constants {
 	public static final String DESSERT_MUSIC = "caravan.ogg.ogg";
 	public static final String WALK_MUSIC = "footstep.ogg";
 	public static final float WALK_MUSIC_VOLUME = 0.1f;
+	public static final String WIZZARD_ATTACK_MUSIC = "wizard_sound_attack.mp3";
+	public static final String KNIGHT_ATTACK_MUSIC = "knight_sound_attack.mp3";
 
 	public static float MAP_HEIGHT;
 	public static float MAP_WIDTH;
@@ -46,4 +48,6 @@ public final class Constants {
 
 	public static boolean isClickedMonster = false;
 	public static boolean isCircle = false;
+
+	public static int monsterCurrentAttack = -999;
 }
